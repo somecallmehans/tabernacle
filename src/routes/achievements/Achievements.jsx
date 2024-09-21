@@ -11,7 +11,7 @@ export default function Achievements() {
   return (
     <div>
       {data.map((d) => (
-        <div>{d.name}</div>
+        <div className="underline">{d.name}</div>
       ))}
     </div>
   );
