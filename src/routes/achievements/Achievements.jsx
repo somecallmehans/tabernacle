@@ -39,24 +39,19 @@ export default function Achievements() {
 
   return (
     <div>
-      <ul>
-        {displayAchievements.map((parent) => (
-          <li key={parent.id}>
-            <div>
-              {parent.name} ({parent.point_value} points)
-            </div>
-            {parent.children.length > 0 && (
-              <ul>
-                {parent.children.map((child) => (
-                  <li key={child.id}>
-                    {child.name} ({child.point_value} points)
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ul>
+      {displayAchievements.map((parent) => (
+        <div key={parent.id}>
+          <div>
+            {parent.name} ({parent.point_value} points)
+          </div>
+          {parent.children.length > 0 &&
+            parent.children.map((child) => (
+              <div key={child.id} className="font-bold">
+                {child.name} ({child.point_value} points)
+              </div>
+            ))}
+        </div>
+      ))}
     </div>
   );
 }
