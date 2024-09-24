@@ -35,21 +35,23 @@ export default function Achievements() {
     return <h1>LOADING!</h1>;
   }
 
-  const displayAchievements = sortAndNestAchievements(data);
+  //   const displayAchievements = sortAndNestAchievements(data);
+  console.log(data);
 
   return (
     <div>
-      {displayAchievements.map((parent) => (
-        <div key={parent.id}>
+      {Object.keys(data).map((x) => (
+        <div>
+          <div className="font-bold">{x}</div>
           <div>
-            {parent.name} ({parent.point_value} points)
-          </div>
-          {parent.children.length > 0 &&
-            parent.children.map((child) => (
-              <div key={child.id} className="font-bold">
-                {child.name} ({child.point_value} points)
+            {data[x].map(({ name, children }) => (
+              <div>
+                <div>{name}</div>
+                {children.length > 0 &&
+                  children.map((child) => <div>{child.name}</div>)}
               </div>
             ))}
+          </div>
         </div>
       ))}
     </div>
