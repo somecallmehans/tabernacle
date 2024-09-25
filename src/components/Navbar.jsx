@@ -10,7 +10,7 @@ const navLinks = [
 
 export default function Navbar() {
   return (
-    <nav className="container flex flex-wrap p-5 flex-col">
+    <nav className="container flex flex-wrap p-5 flex-col bg-slate-200 max-w-full">
       <div className="flex flex-wrap items-center text-base">
         {navLinks.map(({ name, to }) => (
           <Link className="mr-5" to={to}>

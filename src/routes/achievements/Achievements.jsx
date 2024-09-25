@@ -1,55 +1,55 @@
-import React from "react";
+import React, { useState } from "react";
+
 import { useGetAchievementsQuery } from "../../api/apiSlice";
 
-const sortAndNestAchievements = (achievements) => {
-  const map = {};
-  achievements.forEach((achievement) => {
-    if (!achievement.parent_id) {
-      map[achievement.id] = { ...achievement, children: [] };
-    }
-  });
+import LoadingSpinner from "../../components/LoadingSpinner";
 
-  achievements.forEach((achievement) => {
-    if (achievement.parent_id) {
-      if (map[achievement.parent_id]) {
-        map[achievement.parent_id].children.push(achievement);
-      }
-    }
-  });
+const Achievement = ({ name, children, restrictions }) => {
+  const [toggle, setToggle] = useState();
 
-  const sortedAchievements = Object.values(map).sort(
-    (a, b) => b.point_value - a.point_value
+  return (
+    <div>
+      <div className="text-lg">
+        {name}{" "}
+        {restrictions.length > 0 && (
+          <i
+            className={`fa-solid fa-caret-${toggle ? "down" : "right"}`}
+            onClick={() => setToggle(!toggle)}
+          />
+        )}
+      </div>
+      {toggle &&
+        restrictions.map(({ name }) => (
+          <div className="ml-3 text-md">
+            <i className="fa-solid fa-minus mr-2" />
+            {name}
+          </div>
+        ))}
+      {children.length > 0 &&
+        children.map(({ name }) => <div className="ml-3 italic">{name}</div>)}
+    </div>
   );
-
-  sortedAchievements.forEach((parent) => {
-    parent.children.sort((a, b) => b.point_value - a.point_value);
-  });
-
-  return sortedAchievements;
 };
 
 export default function Achievements() {
   const { data, isLoading } = useGetAchievementsQuery();
 
   if (isLoading) {
-    return <h1>LOADING!</h1>;
+    return <LoadingSpinner />;
   }
-
-  //   const displayAchievements = sortAndNestAchievements(data);
-  console.log(data);
 
   return (
     <div>
       {Object.keys(data).map((x) => (
-        <div>
-          <div className="font-bold">{x}</div>
+        <div className="border-2 border-t-black p-2">
+          <div className="font-bold text-2xl">{x} Points</div>
           <div>
-            {data[x].map(({ name, children }) => (
-              <div>
-                <div>{name}</div>
-                {children.length > 0 &&
-                  children.map((child) => <div>{child.name}</div>)}
-              </div>
+            {data[x].map(({ name, children, restrictions }) => (
+              <Achievement
+                name={name}
+                children={children}
+                restrictions={restrictions}
+              />
             ))}
           </div>
         </div>
