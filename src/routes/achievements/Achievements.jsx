@@ -43,15 +43,13 @@ export default function Achievements() {
       {Object.keys(data).map((x) => (
         <div className="border-2 border-t-black p-2">
           <div className="font-bold text-2xl">{x} Points</div>
-          <div>
-            {data[x].map(({ name, children, restrictions }) => (
-              <Achievement
-                name={name}
-                children={children}
-                restrictions={restrictions}
-              />
-            ))}
-          </div>
+          {data[x].map(({ name, children, restrictions }) => (
+            <Achievement
+              name={name}
+              children={children}
+              restrictions={restrictions}
+            />
+          ))}
         </div>
       ))}
     </div>
