@@ -7,7 +7,22 @@ export const apiSlice = createApi({
     getAchievements: builder.query({
       query: () => "achievements_restrictions/",
     }),
+    login: builder.mutation({
+      query: (credentials) => ({
+        url: "api/token/",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    refresh: builder.mutation({
+      query: (token) => ({
+        url: "api/token/refresh/",
+        method: "POST",
+        body: { refresh: token },
+      }),
+    }),
   }),
 });
 
-export const { useGetAchievementsQuery } = apiSlice;
+export const { useGetAchievementsQuery, useLoginMutation, useRefreshMutation } =
+  apiSlice;

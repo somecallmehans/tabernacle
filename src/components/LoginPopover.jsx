@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Popover,
   PopoverButton,
@@ -9,8 +9,24 @@ import {
   Label,
   Button,
 } from "@headlessui/react";
+import { useLoginMutation } from "../api/apiSlice";
 
 export default function LoginPopover() {
+  const [username, setUsername] = useState();
+  const [password, setPassword] = useState();
+  const [login, { isLoading }] = useLoginMutation();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const result = await login({ username, password }).unwrap();
+      localStorage.setItem("access_token", result.access);
+      localStorage.setItem("refresh_token", result.refresh);
+    } catch (err) {
+      console.error("Failed to login: ", err);
+    }
+  };
+
   return (
     <Popover className="relative">
       <PopoverButton className="self-end mr-2 rounded bg-sky-600 py-2 px-4 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700">
@@ -28,19 +44,30 @@ export default function LoginPopover() {
           anchor="bottom end"
           className="mt-2 divide-black/5 rounded-xl bg-black/50 text-sm/6"
         >
-          <form>
+          <form onSubmit={handleLogin}>
             <div className="p-3">
               <Field className="py-2 px-3">
                 <Label className="block text-white">Username</Label>
-                <Input name="username" type="text" />
+                <Input
+                  name="username"
+                  type="text"
+                  onChange={(e) => setUsername(e.target.value)}
+                />
               </Field>
 
               <Field className="py-2 px-3">
                 <Label className="block text-white">Password</Label>
-                <Input name="password" type="password" />
+                <Input
+                  name="password"
+                  type="password"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </Field>
               <div className="flex justify-center">
-                <Button className="rounded bg-sky-600 py-2 px-4 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700">
+                <Button
+                  type="submit"
+                  className="rounded bg-sky-600 py-2 px-4 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700"
+                >
                   Submit
                 </Button>
               </div>
