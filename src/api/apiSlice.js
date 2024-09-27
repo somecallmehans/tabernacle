@@ -7,6 +7,9 @@ export const apiSlice = createApi({
     getAchievements: builder.query({
       query: () => "achievements_restrictions/",
     }),
+    getAllSessions: builder.query({
+      query: () => "all_sessions/",
+    }),
     login: builder.mutation({
       query: (credentials) => ({
         url: "api/token/",
@@ -24,5 +27,9 @@ export const apiSlice = createApi({
   }),
 });
 
-export const { useGetAchievementsQuery, useLoginMutation, useRefreshMutation } =
-  apiSlice;
+export const {
+  useGetAchievementsQuery,
+  useGetAllSessionsQuery,
+  useLoginMutation,
+  useRefreshMutation,
+} = apiSlice;
