@@ -10,24 +10,25 @@ import {
   Button,
 } from "@headlessui/react";
 import { useLoginMutation } from "../api/apiSlice";
+import auth from "../helpers/authHelpers";
 
-export default function LoginPopover() {
+export default function LoginPopover({ loggedIn, setLoggedIn }) {
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
-  const [login, { isLoading }] = useLoginMutation();
+  const [login] = useLoginMutation();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const result = await login({ username, password }).unwrap();
-      localStorage.setItem("access_token", result.access);
-      localStorage.setItem("refresh_token", result.refresh);
+      auth.setToken(result.access, result.refresh);
+      setLoggedIn(true);
     } catch (err) {
       console.error("Failed to login: ", err);
     }
   };
 
-  return (
+  return !loggedIn ? (
     <Popover className="relative">
       <PopoverButton className="self-end mr-2 rounded bg-sky-600 py-2 px-4 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700">
         Login
@@ -76,5 +77,15 @@ export default function LoginPopover() {
         </PopoverPanel>
       </Transition>
     </Popover>
+  ) : (
+    <Button
+      onClick={() => {
+        setLoggedIn(false);
+        auth.removeToken();
+      }}
+      className="self-end mr-2 rounded bg-sky-600 py-2 px-4 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700"
+    >
+      Log Out
+    </Button>
   );
 }

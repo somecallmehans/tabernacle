@@ -19,14 +19,18 @@ const Achievement = ({ name, children, restrictions }) => {
         )}
       </div>
       {toggle &&
-        restrictions.map(({ name }) => (
-          <div className="ml-3 text-md">
+        restrictions.map(({ id, name }) => (
+          <div key={id} className="ml-3 text-md">
             <i className="fa-solid fa-minus mr-2" />
             {name}
           </div>
         ))}
       {children.length > 0 &&
-        children.map(({ name }) => <div className="ml-3 italic">{name}</div>)}
+        children.map(({ id, name }) => (
+          <div key={id} className="ml-3 italic">
+            {name}
+          </div>
+        ))}
     </div>
   );
 };
@@ -41,10 +45,11 @@ export default function Achievements() {
   return (
     <div>
       {Object.keys(data).map((x) => (
-        <div className="border-2 border-t-black p-2">
+        <div key={x} className="border-2 border-t-black p-2">
           <div className="font-bold text-2xl">{x} Points</div>
-          {data[x].map(({ name, children, restrictions }) => (
+          {data[x].map(({ id, name, children, restrictions }) => (
             <Achievement
+              key={id}
               name={name}
               children={children}
               restrictions={restrictions}
