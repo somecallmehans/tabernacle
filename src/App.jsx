@@ -1,11 +1,11 @@
 import { Routes, Route } from "react-router-dom";
-import ProtectedRoute from "./routes/routeMap";
+import ProtectedRoute from "./routes/routeHelper";
 
 import Navbar from "./components/Navbar";
 import Home from "./routes/home/Home";
 import LeaderBoard from "./routes/leaderboard/Leaderboard";
-import Achievements from "./routes/achievements/Achievements";
-import LeagueSession from "./routes/leagueSession/LeagueSession";
+import AchievementsPage from "./routes/achievements/Achievements";
+import LeagueSessionPage from "./routes/leagueSession/LeagueSession";
 import AchievementCrud from "./routes/crud/AchievementCrud";
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/leaderboard" element={<LeaderBoard />} />
-          <Route path="/achievements" element={<Achievements />} />
+          <Route path="/achievements" element={<AchievementsPage />} />
           <Route
             path="/crud"
             element={
@@ -29,7 +29,7 @@ function App() {
             path="/league-session"
             element={
               <ProtectedRoute>
-                <LeagueSession />
+                <LeagueSessionPage />
               </ProtectedRoute>
             }
           />

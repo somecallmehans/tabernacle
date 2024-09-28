@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useGetAchievementsQuery } from "../../api/apiSlice";
 
 import LoadingSpinner from "../../components/LoadingSpinner";
+import PageTitle from "../../components/PageTitle";
 
 const Achievement = ({ name, children, restrictions }) => {
   const [toggle, setToggle] = useState();
@@ -10,7 +11,7 @@ const Achievement = ({ name, children, restrictions }) => {
   return (
     <div>
       <div className="text-lg">
-        {name}{" "}
+        - {name}{" "}
         {restrictions.length > 0 && (
           <i
             className={`fa-solid fa-caret-${toggle ? "down" : "right"}`}
@@ -21,8 +22,7 @@ const Achievement = ({ name, children, restrictions }) => {
       {toggle &&
         restrictions.map(({ id, name }) => (
           <div key={id} className="ml-3 text-md">
-            <i className="fa-solid fa-minus mr-2" />
-            {name}
+            <i className="fa-solid fa-minus mr-2" /> {name}
           </div>
         ))}
       {children.length > 0 &&
@@ -35,7 +35,7 @@ const Achievement = ({ name, children, restrictions }) => {
   );
 };
 
-export default function Achievements() {
+export default function AchievementsPage() {
   const { data, isLoading } = useGetAchievementsQuery();
 
   if (isLoading) {
@@ -43,9 +43,10 @@ export default function Achievements() {
   }
 
   return (
-    <div>
+    <div className="p-4">
+      <PageTitle title="Achievements" />
       {Object.keys(data).map((x) => (
-        <div key={x} className="border-2 border-t-black p-2">
+        <div key={x} className="p-2">
           <div className="font-bold text-2xl">{x} Points</div>
           {data[x].map(({ id, name, children, restrictions }) => (
             <Achievement
