@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, Routes, Link } from "react-router-dom";
 
+import RoundPage from "./RoundPage";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import StandardButton from "../../components/Button";
 import { useGetAllSessionsQuery } from "../../api/apiSlice";
@@ -26,9 +27,18 @@ function LeagueSession() {
             key={id}
           >
             {formatDateString(created_at)}
-            {rounds.map(({ id, round_number }) => (
-              <div key={id} className="justify-self-end">
-                <Link to={`${id}`}>
+            {rounds.map(({ id: roundId, round_number, completed }) => (
+              <div key={roundId} className="justify-self-end">
+                <Link
+                  to={`${roundId}`}
+                  state={{
+                    roundId: roundId,
+                    completed: completed,
+                    sessionId: id,
+                    roundNumber: round_number,
+                    date: formatDateString(created_at),
+                  }}
+                >
                   <StandardButton title={`Round ${round_number}`} />
                 </Link>
               </div>
@@ -62,7 +72,7 @@ export default function LeagueRouter() {
   return (
     <Routes>
       <Route path="/" element={<LeagueManagementPage />} />
-      <Route path="/:round_id" element={<div>A ROUND PAGE</div>} />
+      <Route path="/:round_id" element={<RoundPage />} />
     </Routes>
   );
 }
