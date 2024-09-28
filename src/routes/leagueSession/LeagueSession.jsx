@@ -1,4 +1,5 @@
 import React from "react";
+import { Route, Routes, Link } from "react-router-dom";
 
 import LoadingSpinner from "../../components/LoadingSpinner";
 import StandardButton from "../../components/Button";
@@ -27,14 +28,13 @@ function LeagueSession() {
             {formatDateString(created_at)}
             {rounds.map(({ id, round_number }) => (
               <div key={id} className="justify-self-end">
-                <StandardButton
-                  title={`Round ${round_number}`}
-                  action={() => console.log("ROUND")}
-                />
+                <Link to={`${id}`}>
+                  <StandardButton title={`Round ${round_number}`} />
+                </Link>
               </div>
             ))}
             <div className="justify-self-end">
-              <i class="fa-solid fa-x mr-4" />
+              <i className="fa-solid fa-x mr-4" />
             </div>
           </div>
         ))}
@@ -43,7 +43,7 @@ function LeagueSession() {
   });
 }
 
-export default function LeagueManagementPage() {
+function LeagueManagementPage() {
   return (
     <div className="p-4">
       <PageTitle title="League Session Management" />
@@ -55,6 +55,15 @@ export default function LeagueManagementPage() {
       </div>
       <LeagueSession />
     </div>
+  );
+}
+
+export default function LeagueRouter() {
+  return (
+    <Routes>
+      <Route path="/" element={<LeagueManagementPage />} />
+      <Route path="/:round_id" element={<div>A ROUND PAGE</div>} />
+    </Routes>
   );
 }
 

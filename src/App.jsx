@@ -5,7 +5,7 @@ import Navbar from "./components/Navbar";
 import Home from "./routes/home/Home";
 import LeaderBoard from "./routes/leaderboard/Leaderboard";
 import AchievementsPage from "./routes/achievements/Achievements";
-import LeagueSessionPage from "./routes/leagueSession/LeagueSession";
+import LeagueRouter from "./routes/leagueSession/LeagueSession";
 import AchievementCrud from "./routes/crud/AchievementCrud";
 
 function App() {
@@ -26,10 +26,10 @@ function App() {
             }
           />
           <Route
-            path="/league-session"
+            path="/league-session/*"
             element={
               <ProtectedRoute>
-                <LeagueSessionPage />
+                <LeagueRouter />
               </ProtectedRoute>
             }
           />
