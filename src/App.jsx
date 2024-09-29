@@ -12,30 +12,28 @@ function App() {
   return (
     <>
       <Navbar />
-      <div>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/leaderboard" element={<LeaderBoard />} />
-          <Route path="/achievements" element={<AchievementsPage />} />
-          <Route
-            path="/crud"
-            element={
-              <ProtectedRoute>
-                <AchievementCrud />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/league-session/*"
-            element={
-              <ProtectedRoute>
-                <LeagueRouter />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="*" element={<p>404 Error - Nothing here...</p>} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/leaderboard" element={<LeaderBoard />} />
+        <Route path="/achievements" element={<AchievementsPage />} />
+        <Route
+          path="/crud"
+          element={
+            <ProtectedRoute>
+              <AchievementCrud />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/league-session/*"
+          element={
+            <ProtectedRoute>
+              <LeagueRouter />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<p>404 Error - Nothing here...</p>} />
+      </Routes>
     </>
   );
 }
