@@ -111,7 +111,6 @@ function RoundLobby({ roundId, sessionId }) {
 // If a round is closed, show the FocusedView but disable everything
 
 function FocusedRound({ completed, pods }) {
-  console.log(completed);
   if (completed) {
     return <div>This is a historic round thanks for visiting</div>;
   }
@@ -121,8 +120,12 @@ function FocusedRound({ completed, pods }) {
         const pod = pods[pod_id];
         return (
           <div key={pod_id}>
-            <div className="text-center text-3xl">
-              <span>Pod {index + 1}</span>
+            <div className="flex items-end justify-center content-center text-3xl mb-2">
+              <div className="mr-4">Pod {index + 1}</div>
+              <i
+                className="text-xl fa-regular fa-circle-check text-sky-600 hover:text-sky-500"
+                onClick={() => console.log("SCORECARD")}
+              />
             </div>
             <div className="border border-blue-300 grid grid-cols-2 overflow-y-auto">
               {pod.map(({ participants: { name, total_points } }, index) => (
