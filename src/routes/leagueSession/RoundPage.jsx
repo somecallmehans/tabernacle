@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import { Link, useLocation } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 
@@ -12,6 +13,7 @@ import PageTitle from "../../components/PageTitle";
 import StandardButton from "../../components/Button";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import CreatableSelect from "react-select/creatable";
+import ScorecardModal from "../../components/ScorecardModal";
 
 function RoundLobby({ roundId, sessionId }) {
   const [selectedParticipants, setSelectedParticipants] = useState([]);
@@ -111,6 +113,19 @@ function RoundLobby({ roundId, sessionId }) {
 // If a round is closed, show the FocusedView but disable everything
 
 function FocusedRound({ completed, pods }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [focusedPod, setFocusedPod] = useState();
+
+  function closeModal() {
+    setFocusedPod();
+    setIsOpen(false);
+  }
+
+  function openModal(pod) {
+    setFocusedPod(pod.map((p) => p.participants));
+    setIsOpen(true);
+  }
+
   if (completed) {
     return <div>This is a historic round thanks for visiting</div>;
   }
@@ -124,26 +139,34 @@ function FocusedRound({ completed, pods }) {
               <div className="mr-4">Pod {index + 1}</div>
               <i
                 className="text-xl fa-regular fa-circle-check text-sky-600 hover:text-sky-500"
-                onClick={() => console.log("SCORECARD")}
+                onClick={() => openModal(pod)}
               />
             </div>
             <div className="border border-blue-300 grid grid-cols-2 overflow-y-auto">
-              {pod.map(({ participants: { name, total_points } }, index) => (
-                <div
-                  className={`p-8 border border-blue-300 grid grid-cols-1 overflow-y-auto text-center ${
-                    pod.length === 3 && index === 2 ? "col-span-2" : ""
-                  }`}
-                >
-                  <span className="text-xl">{name}</span>
-                  <span className="text-sm">
-                    {total_points} Points This Month
-                  </span>
-                </div>
-              ))}
+              {pod.map(
+                ({ id, participants: { name, total_points } }, index) => (
+                  <div
+                    key={id}
+                    className={`p-8 border border-blue-300 grid grid-cols-1 overflow-y-auto text-center ${
+                      pod.length === 3 && index === 2 ? "col-span-2" : ""
+                    }`}
+                  >
+                    <span className="text-xl">{name}</span>
+                    <span className="text-sm">
+                      {total_points} Points This Month
+                    </span>
+                  </div>
+                )
+              )}
             </div>
           </div>
         );
       })}
+      <ScorecardModal
+        isOpen={isOpen}
+        closeModal={closeModal}
+        focusedPod={focusedPod}
+      />
     </div>
   );
 }
