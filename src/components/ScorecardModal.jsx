@@ -52,7 +52,7 @@ export default function ScorecardModal({ isOpen, closeModal, focusedPod }) {
                     Here are the participants in this pod:
                   </p>
                   {focusedPod.map((x) => (
-                    <div>{x.name}</div>
+                    <div key={x.id}>{x.name}</div>
                   ))}
                 </div>
                 ----------------- Scorecard Form Fields:

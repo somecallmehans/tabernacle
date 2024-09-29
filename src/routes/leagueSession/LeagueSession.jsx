@@ -11,16 +11,63 @@ import {
 import { formatDateString, formatMonthYear } from "../../helpers/dateHelpers";
 import PageTitle from "../../components/PageTitle";
 
-const disableRoundButtons = (sessionClosed, roundNumber, roundComplete) => {
+const disableRoundButtons = (
+  roundNumber,
+  sessionClosed,
+  completed,
+  otherRoundStatus
+) => {
+  // if a session is closed then no buttons should be disabled
   if (sessionClosed) {
     return false;
   }
 
-  if (!roundComplete) {
-    return false;
+  // if round 2 is not finished and the other round is also not finished disable round 2
+  if (roundNumber === 2 && !completed && !otherRoundStatus) {
+    return true;
   }
 
-  return true;
+  // if round 1 is finished disable that button
+  if (roundNumber === 1 && completed) {
+    return true;
+  }
+
+  return false;
+};
+
+const Round = ({
+  id,
+  roundNumber,
+  created_at,
+  completed,
+  sessionClosed,
+  otherRoundStatus,
+}) => {
+  const disableButton = disableRoundButtons(
+    roundNumber,
+    sessionClosed,
+    completed,
+    otherRoundStatus
+  );
+  return (
+    <div className="justify-self-end">
+      <Link
+        to={`${id}`}
+        state={{
+          roundId: id,
+          completed: completed,
+          sessionId: id,
+          roundNumber: roundNumber,
+          date: created_at,
+        }}
+      >
+        <StandardButton
+          disabled={disableButton}
+          title={`${sessionClosed ? "View " : "Begin "}Round ${roundNumber}`}
+        />
+      </Link>
+    </div>
+  );
 };
 
 function LeagueSession() {
@@ -42,7 +89,23 @@ function LeagueSession() {
             key={id}
           >
             {formatDateString(created_at)}
-            {rounds.map(({ id: roundId, round_number, completed }) => {
+            <Round
+              id={rounds[0].id}
+              roundNumber={rounds[0].round_number}
+              completed={rounds[0].completed}
+              created_at={formatDateString(created_at)}
+              sessionClosed={closed}
+              otherRoundStatus={rounds[1].completed}
+            />
+            <Round
+              id={rounds[1].id}
+              roundNumber={rounds[1].round_number}
+              completed={rounds[1].completed}
+              created_at={formatDateString(created_at)}
+              sessionClosed={closed}
+              otherRoundStatus={rounds[0].completed}
+            />
+            {/* {rounds.map(({ id: roundId, round_number, completed }) => {
               const disableButton = disableRoundButtons(
                 closed,
                 round_number,
@@ -69,7 +132,7 @@ function LeagueSession() {
                   </Link>
                 </div>
               );
-            })}
+            })} */}
             <div className="justify-self-end">
               <i className="fa-solid fa-trash-can mr-4" />
             </div>
