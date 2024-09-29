@@ -49,6 +49,16 @@ const Round = ({
     completed,
     otherRoundStatus
   );
+
+  function roundText() {
+    if (completed) {
+      return "View ";
+    }
+    if (roundNumber === 2 && !completed && !otherRoundStatus) {
+      return "Begin ";
+    }
+    return "Continue ";
+  }
   return (
     <div className="justify-self-end">
       <Link
@@ -63,7 +73,7 @@ const Round = ({
       >
         <StandardButton
           disabled={disableButton}
-          title={`${sessionClosed ? "View " : "Begin "}Round ${roundNumber}`}
+          title={`${roundText()}Round ${roundNumber}`}
         />
       </Link>
     </div>
@@ -81,7 +91,7 @@ function LeagueSession() {
     return (
       <div className="bg-white p-4 mb-4" key={month_year}>
         <div className="text-2xl mb-2 underline">
-          {formatMonthYear(month_year)}
+          {formatMonthYear(month_year)} Season
         </div>
         {sessions.map(({ id, created_at, rounds, closed }) => (
           <div
@@ -89,6 +99,7 @@ function LeagueSession() {
             key={id}
           >
             {formatDateString(created_at)}
+            {/* Sessions will always have 2 rounds, no more no less. */}
             <Round
               id={rounds[0].id}
               roundNumber={rounds[0].round_number}
@@ -105,34 +116,6 @@ function LeagueSession() {
               sessionClosed={closed}
               otherRoundStatus={rounds[0].completed}
             />
-            {/* {rounds.map(({ id: roundId, round_number, completed }) => {
-              const disableButton = disableRoundButtons(
-                closed,
-                round_number,
-                completed
-              );
-              return (
-                <div key={roundId} className="justify-self-end">
-                  <Link
-                    to={`${roundId}`}
-                    state={{
-                      roundId: roundId,
-                      completed: completed,
-                      sessionId: id,
-                      roundNumber: round_number,
-                      date: formatDateString(created_at),
-                    }}
-                  >
-                    <StandardButton
-                      disabled={disableButton}
-                      title={`${
-                        closed ? "View " : "Begin "
-                      }Round ${round_number}`}
-                    />
-                  </Link>
-                </div>
-              );
-            })} */}
             <div className="justify-self-end">
               <i className="fa-solid fa-trash-can mr-4" />
             </div>
