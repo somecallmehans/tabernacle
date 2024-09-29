@@ -4,9 +4,24 @@ import { Route, Routes, Link } from "react-router-dom";
 import RoundPage from "./RoundPage";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import StandardButton from "../../components/Button";
-import { useGetAllSessionsQuery } from "../../api/apiSlice";
+import {
+  useGetAllSessionsQuery,
+  usePostCreateSessionMutation,
+} from "../../api/apiSlice";
 import { formatDateString, formatMonthYear } from "../../helpers/dateHelpers";
 import PageTitle from "../../components/PageTitle";
+
+const disableRoundButtons = (sessionClosed, roundNumber, roundComplete) => {
+  if (sessionClosed) {
+    return false;
+  }
+
+  if (!roundComplete) {
+    return false;
+  }
+
+  return true;
+};
 
 function LeagueSession() {
   const { data, isLoading } = useGetAllSessionsQuery();
@@ -21,30 +36,42 @@ function LeagueSession() {
         <div className="text-2xl mb-2 underline">
           {formatMonthYear(month_year)}
         </div>
-        {sessions.map(({ id, created_at, rounds }) => (
+        {sessions.map(({ id, created_at, rounds, closed }) => (
           <div
             className="border border-transparent border-b-slate-300 grid grid-cols-4 gap-4 mb-4 py-2 items-center"
             key={id}
           >
             {formatDateString(created_at)}
-            {rounds.map(({ id: roundId, round_number, completed }) => (
-              <div key={roundId} className="justify-self-end">
-                <Link
-                  to={`${roundId}`}
-                  state={{
-                    roundId: roundId,
-                    completed: completed,
-                    sessionId: id,
-                    roundNumber: round_number,
-                    date: formatDateString(created_at),
-                  }}
-                >
-                  <StandardButton title={`Round ${round_number}`} />
-                </Link>
-              </div>
-            ))}
+            {rounds.map(({ id: roundId, round_number, completed }) => {
+              const disableButton = disableRoundButtons(
+                closed,
+                round_number,
+                completed
+              );
+              return (
+                <div key={roundId} className="justify-self-end">
+                  <Link
+                    to={`${roundId}`}
+                    state={{
+                      roundId: roundId,
+                      completed: completed,
+                      sessionId: id,
+                      roundNumber: round_number,
+                      date: formatDateString(created_at),
+                    }}
+                  >
+                    <StandardButton
+                      disabled={disableButton}
+                      title={`${
+                        closed ? "View " : "Begin "
+                      }Round ${round_number}`}
+                    />
+                  </Link>
+                </div>
+              );
+            })}
             <div className="justify-self-end">
-              <i className="fa-solid fa-x mr-4" />
+              <i className="fa-solid fa-trash-can mr-4" />
             </div>
           </div>
         ))}
@@ -54,13 +81,23 @@ function LeagueSession() {
 }
 
 function LeagueManagementPage() {
+  const [postCreateSession] = usePostCreateSessionMutation();
+
+  const handleCreateSession = async () => {
+    try {
+      await postCreateSession().unwrap();
+    } catch (err) {
+      console.error("Failed to begin new league session: ", err);
+    }
+  };
+
   return (
     <div className="p-4">
       <PageTitle title="League Session Management" />
       <div className="mb-4">
         <StandardButton
           title="Start New"
-          action={() => console.log("NEW ROUND")}
+          action={() => handleCreateSession()}
         />
       </div>
       <LeagueSession />

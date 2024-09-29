@@ -3,10 +3,21 @@ import { Link, useLocation } from "react-router-dom";
 
 import PageTitle from "../../components/PageTitle";
 import StandardButton from "../../components/Button";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import { useGetParticipantsQuery } from "../../api/apiSlice";
 
 function RoundLobby() {
-  return <div>BEEP BOOP ROUND LOBBY</div>;
+  const { data, isLoading } = useGetParticipantsQuery();
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+  return <div>{data.map((x) => x.name)}</div>;
 }
+
+// If a round is open but there are no pods, go to the lobby
+// If a round is open but we have pods, go to the FocusedView
+// If a round is closed, show the FocusedView but disable everything
 
 function FocusedRound({ completed }) {
   if (completed) {
@@ -40,7 +51,3 @@ export default function RoundPage() {
     </div>
   );
 }
-
-// If a round is open but there are no pods, go to the lobby
-// If a round is open but we have pods, go to the FocusedView
-// If a round is closed, show the FocusedView but disable everything

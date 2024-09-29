@@ -3,12 +3,24 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: "http://127.0.0.1:8000/" }),
+  tagTypes: ["Sessions"],
   endpoints: (builder) => ({
     getAchievements: builder.query({
       query: () => "achievements_restrictions/",
     }),
     getAllSessions: builder.query({
       query: () => "all_sessions/",
+      providesTags: ["Sessions"],
+    }),
+    getParticipants: builder.query({
+      query: () => "participants/",
+    }),
+    postCreateSession: builder.mutation({
+      query: () => ({
+        url: "sessions/",
+        method: "POST",
+      }),
+      invalidatesTags: ["Sessions"],
     }),
     login: builder.mutation({
       query: (credentials) => ({
@@ -30,6 +42,8 @@ export const apiSlice = createApi({
 export const {
   useGetAchievementsQuery,
   useGetAllSessionsQuery,
+  useGetParticipantsQuery,
+  usePostCreateSessionMutation,
   useLoginMutation,
   useRefreshMutation,
 } = apiSlice;
