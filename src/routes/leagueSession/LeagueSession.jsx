@@ -87,7 +87,7 @@ function LeagueManagementPage() {
     try {
       await postCreateSession().unwrap();
     } catch (err) {
-      console.error("Failed to begin new league session: ", err);
+      console.error("Failed to create new league session: ", err);
     }
   };
 

@@ -15,12 +15,22 @@ export const apiSlice = createApi({
     getParticipants: builder.query({
       query: () => "participants/",
     }),
+    getPods: builder.query({
+      query: (params) => `pods/${params}/`,
+    }),
     postCreateSession: builder.mutation({
       query: () => ({
         url: "sessions/",
         method: "POST",
       }),
       invalidatesTags: ["Sessions"],
+    }),
+    postBeginRound: builder.mutation({
+      query: (body) => ({
+        url: "begin_round/",
+        method: "POST",
+        body: body,
+      }),
     }),
     login: builder.mutation({
       query: (credentials) => ({
@@ -43,7 +53,9 @@ export const {
   useGetAchievementsQuery,
   useGetAllSessionsQuery,
   useGetParticipantsQuery,
+  useGetPodsQuery,
   usePostCreateSessionMutation,
+  usePostBeginRoundMutation,
   useLoginMutation,
   useRefreshMutation,
 } = apiSlice;

@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 
-import { useGetParticipantsQuery } from "../../api/apiSlice";
+import {
+  useGetParticipantsQuery,
+  useGetPodsQuery,
+  usePostBeginRoundMutation,
+} from "../../api/apiSlice";
 
 import PageTitle from "../../components/PageTitle";
 import StandardButton from "../../components/Button";
@@ -11,25 +15,30 @@ import CreatableSelect from "react-select/creatable";
 
 function RoundLobby({ roundId, sessionId }) {
   const [selectedParticipants, setSelectedParticipants] = useState([]);
+  const [postBeginRound] = usePostBeginRoundMutation();
   const { data, isLoading } = useGetParticipantsQuery();
   const { handleSubmit, control } = useForm();
-  const onSubmit = () => {
-    console.log({
-      round: roundId,
-      sessionId: sessionId,
-      participants: selectedParticipants,
-    });
-  };
 
   if (isLoading) {
     return <LoadingSpinner />;
   }
 
+  const onSubmit = async () => {
+    try {
+      await postBeginRound({
+        round: roundId,
+        session: sessionId,
+        participants: selectedParticipants,
+      }).unwrap();
+    } catch (err) {
+      console.error("Failed to begin round: ", err);
+    }
+  };
+
   const addParticipant = (participant) => {
-    console.log(participant);
     if (
       participant &&
-      !selectedParticipants.some((p) => p.id === participant?.id)
+      !selectedParticipants.some((p) => p.name === participant?.name)
     )
       setSelectedParticipants([...selectedParticipants, participant]);
   };
@@ -73,7 +82,10 @@ function RoundLobby({ roundId, sessionId }) {
         <StandardButton type="submit" title="Submit" />
       </form>
       <div className="mt-4 text-2xl flex justify-center">
-        <span>Checked In Players</span>
+        <span>
+          Checked In Players{" "}
+          {selectedParticipants.length === 0 ? "" : selectedParticipants.length}
+        </span>
       </div>
       {selectedParticipants.length > 0 && (
         <div className="mt-2 w-1/2 mx-auto">
@@ -98,19 +110,51 @@ function RoundLobby({ roundId, sessionId }) {
 // If a round is open but we have pods, go to the FocusedView
 // If a round is closed, show the FocusedView but disable everything
 
-function FocusedRound({ completed }) {
+function FocusedRound({ completed, pods }) {
+  console.log(completed);
   if (completed) {
     return <div>This is a historic round thanks for visiting</div>;
   }
-
-  return <div>This is an active round thanks for visiting</div>;
+  return (
+    <div className="grid grid-cols-2 gap-6">
+      {Object.keys(pods).map((pod_id, index) => {
+        const pod = pods[pod_id];
+        return (
+          <div key={pod_id}>
+            <div className="text-center text-3xl">
+              <span>Pod {index + 1}</span>
+            </div>
+            <div className="border border-blue-300 grid grid-cols-2 overflow-y-auto">
+              {pod.map(({ participants: { name, total_points } }, index) => (
+                <div
+                  className={`p-8 border border-blue-300 grid grid-cols-1 overflow-y-auto text-center ${
+                    pod.length === 3 && index === 2 ? "col-span-2" : ""
+                  }`}
+                >
+                  <span className="text-xl">{name}</span>
+                  <span className="text-sm">
+                    {total_points} Points This Month
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 export default function RoundPage() {
   const location = useLocation();
-  // temp until the api is ready
-  const pods = [];
   const { roundNumber, date, sessionId, roundId, completed } = location.state;
+
+  const { data, isLoading } = useGetPodsQuery(roundId);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <div className="bg-white p-4 mb-4 h-full">
       <PageTitle title={`Round ${roundNumber} for ${date}`} />
@@ -118,14 +162,14 @@ export default function RoundPage() {
         <StandardButton title="Back" />
       </Link>
       <div className="mt-4">
-        {pods.length === 0 ? (
+        {!completed && data && Object.keys(data).length === 0 ? (
           <RoundLobby sessionId={sessionId} roundId={roundId} />
         ) : (
           <FocusedRound
             sessionId={sessionId}
             roundId={roundId}
             completed={completed}
-            pods={pods}
+            pods={data}
           />
         )}
       </div>
