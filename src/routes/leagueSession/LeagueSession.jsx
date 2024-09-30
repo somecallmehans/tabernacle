@@ -7,6 +7,7 @@ import StandardButton from "../../components/Button";
 import {
   useGetAllSessionsQuery,
   usePostCreateSessionMutation,
+  useGetPodsQuery,
 } from "../../api/apiSlice";
 import { formatDateString, formatMonthYear } from "../../helpers/dateHelpers";
 import PageTitle from "../../components/PageTitle";
@@ -22,13 +23,13 @@ const disableRoundButtons = (
     return false;
   }
 
-  // if round 2 is not finished and the other round is also not finished disable round 2
-  if (roundNumber === 2 && !completed && !otherRoundStatus) {
+  // if round 1 is finished disable that button
+  if (roundNumber === 1 && completed) {
     return true;
   }
 
-  // if round 1 is finished disable that button
-  if (roundNumber === 1 && completed) {
+  // if round 2 is not finished and the other round is also not finished disable round 2
+  if (roundNumber === 2 && !completed && !otherRoundStatus) {
     return true;
   }
 
@@ -39,6 +40,7 @@ const Round = ({
   id,
   sessionId,
   roundNumber,
+  previousRoundId,
   created_at,
   completed,
   sessionClosed,
@@ -50,6 +52,18 @@ const Round = ({
     completed,
     otherRoundStatus
   );
+
+  let previousRoundParticipants = [];
+
+  if (previousRoundId) {
+    const { data, isLoading } = useGetPodsQuery(previousRoundId);
+
+    previousRoundParticipants =
+      !isLoading &&
+      Object.values(data).flatMap(({ pods }) =>
+        Object.values(pods).flatMap((item) => item.participants)
+      );
+  }
 
   function roundText() {
     if (completed) {
@@ -70,6 +84,7 @@ const Round = ({
           sessionId: sessionId,
           roundNumber: roundNumber,
           date: created_at,
+          previousRoundParticipants: previousRoundParticipants,
         }}
       >
         <StandardButton
@@ -113,6 +128,7 @@ function LeagueSession() {
             <Round
               sessionId={id}
               id={rounds[1].id}
+              previousRoundId={rounds[0].id}
               roundNumber={rounds[1].round_number}
               completed={rounds[1].completed}
               created_at={formatDateString(created_at)}
@@ -142,7 +158,7 @@ function LeagueManagementPage() {
 
   return (
     <div className="p-4">
-      <PageTitle title="League Session Management" />
+      <PageTitle title="League Season Management" />
       <div className="mb-4">
         <StandardButton
           title="Start New"
@@ -162,21 +178,3 @@ export default function LeagueRouter() {
     </Routes>
   );
 }
-
-// return (
-//   <React.Fragment>
-//     <h1>
-//       Maybe make this page with a table sorted from most to least recent of
-//       sessions. Clicking a plus button begins a session, the row propagates
-//       with a round 1 and round 2 button. Old rows are historic (session.closed
-//       is true), clicking into those reveals info about the old
-//       sessions/rounds. This should be done with a request to the backend that sends the mm_yy +
-//     </h1>
-//     <h1>
-//       The new row (session.closed is false) will be fully editable and send
-//       requests for the appropriate round info This page should make a request
-//       to a new endpoint and fetch all sessions.
-//     </h1>
-
-//   </React.Fragment>
-// );

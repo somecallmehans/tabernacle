@@ -22,7 +22,6 @@ const ScorecardFormFields = ({
   roundId,
   closeModal,
 }) => {
-  console.log(focusedPod);
   const [postRoundScores] = usePostRoundScoresMutation();
   const { control, handleSubmit } = useForm();
   const { data, isLoading } = useGetAchievementsQuery();

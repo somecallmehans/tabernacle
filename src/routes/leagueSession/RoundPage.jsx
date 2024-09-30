@@ -7,6 +7,7 @@ import {
   useGetParticipantsQuery,
   useGetPodsQuery,
   usePostBeginRoundMutation,
+  usePostCloseRoundMutation,
 } from "../../api/apiSlice";
 
 import PageTitle from "../../components/PageTitle";
@@ -15,8 +16,10 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import CreatableSelect from "react-select/creatable";
 import ScorecardModal from "../../components/ScorecardModal";
 
-function RoundLobby({ roundId, sessionId }) {
-  const [selectedParticipants, setSelectedParticipants] = useState([]);
+function RoundLobby({ roundId, sessionId, previousRoundParticipants }) {
+  const [selectedParticipants, setSelectedParticipants] = useState(
+    previousRoundParticipants || []
+  );
   const [postBeginRound] = usePostBeginRoundMutation();
   const { data, isLoading } = useGetParticipantsQuery();
   const { handleSubmit, control } = useForm();
@@ -24,6 +27,13 @@ function RoundLobby({ roundId, sessionId }) {
   if (isLoading) {
     return <LoadingSpinner />;
   }
+
+  const filteredData = data.filter(
+    (largeItem) =>
+      !selectedParticipants.some(
+        (smallItem) => smallItem.name === largeItem.name
+      )
+  );
 
   const onSubmit = async () => {
     try {
@@ -63,7 +73,7 @@ function RoundLobby({ roundId, sessionId }) {
               className="grow mr-2"
               {...field}
               isClearable
-              options={data}
+              options={filteredData}
               getOptionLabel={(option) => option.name}
               getOptionValue={(option) => ({
                 id: option.id,
@@ -115,11 +125,9 @@ function RoundLobby({ roundId, sessionId }) {
 function FocusedRound({ completed, pods, sessionId, roundId }) {
   const [isOpen, setIsOpen] = useState(false);
   const [focusedPod, setFocusedPod] = useState({});
-  const roundParticipantList = Object.values(pods).flatMap((innerObject) =>
-    Object.values(innerObject).flatMap((item) => item.participants)
+  const roundParticipantList = Object.values(pods).flatMap(({ pods }) =>
+    Object.values(pods).flatMap((item) => item.participants)
   );
-
-  console.log(pods);
 
   function closeModal() {
     setFocusedPod({});
@@ -188,8 +196,16 @@ function FocusedRound({ completed, pods, sessionId, roundId }) {
 }
 
 export default function RoundPage() {
+  const [postCloseRound] = usePostCloseRoundMutation();
   const location = useLocation();
-  const { roundNumber, date, sessionId, roundId, completed } = location.state;
+  const {
+    roundNumber,
+    date,
+    sessionId,
+    roundId,
+    completed,
+    previousRoundParticipants,
+  } = location.state;
 
   const { data, isLoading } = useGetPodsQuery(roundId);
 
@@ -197,15 +213,35 @@ export default function RoundPage() {
     return <LoadingSpinner />;
   }
 
+  const handleCloseRound = async () => {
+    try {
+      await postCloseRound({
+        round: { id: roundId, round_number: roundNumber },
+        session: sessionId,
+      }).unwrap();
+    } catch (error) {
+      console.error("Failed to close round: ", error);
+    }
+  };
+
   return (
     <div className="bg-white p-4 mb-4 h-full">
       <PageTitle title={`Round ${roundNumber} for ${date}`} />
       <Link to={"/league-session"}>
         <StandardButton title="Back" />
       </Link>
+
+      <Link to={"/league-session"}>
+        <StandardButton title="Close" action={() => handleCloseRound()} />
+      </Link>
+
       <div className="mt-4">
         {!completed && data && Object.keys(data).length === 0 ? (
-          <RoundLobby sessionId={sessionId} roundId={roundId} />
+          <RoundLobby
+            sessionId={sessionId}
+            roundId={roundId}
+            previousRoundParticipants={previousRoundParticipants}
+          />
         ) : (
           <FocusedRound
             sessionId={sessionId}

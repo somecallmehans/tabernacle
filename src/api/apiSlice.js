@@ -33,6 +33,13 @@ export const apiSlice = createApi({
         body: body,
       }),
     }),
+    postCloseRound: builder.mutation({
+      query: (body) => ({
+        url: "close_round/",
+        method: "POST",
+        body: body,
+      }),
+    }),
     postRoundScores: builder.mutation({
       query: (body) => ({
         url: "submit_achievements/",
@@ -65,6 +72,7 @@ export const {
   useGetPodsQuery,
   usePostCreateSessionMutation,
   usePostBeginRoundMutation,
+  usePostCloseRoundMutation,
   usePostRoundScoresMutation,
   useLoginMutation,
   useRefreshMutation,
