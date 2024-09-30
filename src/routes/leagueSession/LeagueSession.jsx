@@ -12,29 +12,30 @@ import {
 import { formatDateString, formatMonthYear } from "../../helpers/dateHelpers";
 import PageTitle from "../../components/PageTitle";
 
-const disableRoundButtons = (
-  roundNumber,
-  sessionClosed,
-  completed,
-  otherRoundStatus
-) => {
-  // if a session is closed then no buttons should be disabled
-  if (sessionClosed) {
-    return false;
-  }
+// Fix this later
+// const disableRoundButtons = (
+//   roundNumber,
+//   sessionClosed,
+//   completed,
+//   otherRoundStatus
+// ) => {
+//   // if a session is closed then no buttons should be disabled
+//   if (sessionClosed) {
+//     return false;
+//   }
 
-  // if round 1 is finished disable that button
-  if (roundNumber === 1 && completed) {
-    return true;
-  }
+//   // if round 1 is finished disable that button
+//   if (roundNumber === 1 && completed) {
+//     return true;
+//   }
 
-  // if round 2 is not finished and the other round is also not finished disable round 2
-  if (roundNumber === 2 && !completed && !otherRoundStatus) {
-    return true;
-  }
+//   // if round 2 is not finished and the other round is also not finished disable round 2
+//   if (roundNumber === 2 && !completed && !otherRoundStatus) {
+//     return true;
+//   }
 
-  return false;
-};
+//   return false;
+// };
 
 const Round = ({
   id,
@@ -46,13 +47,6 @@ const Round = ({
   sessionClosed,
   otherRoundStatus,
 }) => {
-  const disableButton = disableRoundButtons(
-    roundNumber,
-    sessionClosed,
-    completed,
-    otherRoundStatus
-  );
-
   let previousRoundParticipants = [];
 
   if (previousRoundId) {
@@ -87,10 +81,7 @@ const Round = ({
           previousRoundParticipants: previousRoundParticipants,
         }}
       >
-        <StandardButton
-          disabled={disableButton}
-          title={`${roundText()}Round ${roundNumber}`}
-        />
+        <StandardButton title={`${roundText()}Round ${roundNumber}`} />
       </Link>
     </div>
   );

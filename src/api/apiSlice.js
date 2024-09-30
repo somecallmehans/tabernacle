@@ -32,6 +32,7 @@ export const apiSlice = createApi({
         method: "POST",
         body: body,
       }),
+      invalidatesTags: ["Pods"],
     }),
     postCloseRound: builder.mutation({
       query: (body) => ({

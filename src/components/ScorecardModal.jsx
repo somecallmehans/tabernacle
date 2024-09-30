@@ -87,14 +87,6 @@ const ScorecardFormFields = ({
       participantAchievementMap[winnerId]["achievements"].push(id)
     );
 
-    // is this the same as above?
-    // winnerDeckbuildingAchievements.forEach(({ id }) => {
-    //   participantAchievementMap[winnerId]["achievements"] = [
-    //     ...participantAchievementMap[winnerId]["achievements"],
-    //     id,
-    //   ];
-    // });
-
     boolMap.forEach(({ condition, achievementId }) => {
       if (condition) {
         participantAchievementMap[winnerId]["achievements"].push(achievementId);
