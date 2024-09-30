@@ -10,7 +10,7 @@ const navLinks = [
   { id: 4, name: "CRUD Stuff", to: "/crud", admin: true },
   {
     id: 5,
-    name: "New League Session",
+    name: "Season Management",
     to: "/league-session",
     admin: true,
   },

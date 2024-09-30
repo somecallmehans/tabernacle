@@ -112,9 +112,12 @@ function RoundLobby({ roundId, sessionId }) {
 // If a round is open but we have pods, go to the FocusedView
 // If a round is closed, show the FocusedView but disable everything
 
-function FocusedRound({ completed, pods }) {
+function FocusedRound({ completed, pods, sessionId, roundId }) {
   const [isOpen, setIsOpen] = useState(false);
   const [focusedPod, setFocusedPod] = useState();
+  const roundParticipantList = Object.values(pods).flatMap((innerObject) =>
+    Object.values(innerObject).flatMap((item) => item.participants)
+  );
 
   function closeModal() {
     setFocusedPod();
@@ -166,6 +169,9 @@ function FocusedRound({ completed, pods }) {
         isOpen={isOpen}
         closeModal={closeModal}
         focusedPod={focusedPod}
+        roundParticipantList={roundParticipantList}
+        sessionId={sessionId}
+        roundId={roundId}
       />
     </div>
   );

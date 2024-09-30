@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: "http://127.0.0.1:8000/" }),
-  tagTypes: ["Sessions"],
+  tagTypes: ["Sessions", "Pods"],
   endpoints: (builder) => ({
     getAchievements: builder.query({
       query: () => "achievements_restrictions/",
@@ -17,6 +17,7 @@ export const apiSlice = createApi({
     }),
     getPods: builder.query({
       query: (params) => `pods/${params}/`,
+      providesTags: ["Pods"],
     }),
     postCreateSession: builder.mutation({
       query: () => ({
@@ -31,6 +32,14 @@ export const apiSlice = createApi({
         method: "POST",
         body: body,
       }),
+    }),
+    postRoundScores: builder.mutation({
+      query: (body) => ({
+        url: "submit_achievements/",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Pods"],
     }),
     login: builder.mutation({
       query: (credentials) => ({
@@ -56,6 +65,7 @@ export const {
   useGetPodsQuery,
   usePostCreateSessionMutation,
   usePostBeginRoundMutation,
+  usePostRoundScoresMutation,
   useLoginMutation,
   useRefreshMutation,
 } = apiSlice;

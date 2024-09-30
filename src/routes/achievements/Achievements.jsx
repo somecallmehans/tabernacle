@@ -45,10 +45,10 @@ export default function AchievementsPage() {
   return (
     <div className="p-4">
       <PageTitle title="Achievements" />
-      {Object.keys(data).map((x) => (
+      {Object.keys(data.map).map((x) => (
         <div key={x} className="p-2">
           <div className="font-bold text-2xl">{x} Points</div>
-          {data[x].map(({ id, name, children, restrictions }) => (
+          {data.map[x].map(({ id, name, children, restrictions }) => (
             <Achievement
               key={id}
               name={name}

@@ -37,6 +37,7 @@ const disableRoundButtons = (
 
 const Round = ({
   id,
+  sessionId,
   roundNumber,
   created_at,
   completed,
@@ -66,7 +67,7 @@ const Round = ({
         state={{
           roundId: id,
           completed: completed,
-          sessionId: id,
+          sessionId: sessionId,
           roundNumber: roundNumber,
           date: created_at,
         }}
@@ -101,6 +102,7 @@ function LeagueSession() {
             {formatDateString(created_at)}
             {/* Sessions will always have 2 rounds, no more no less. */}
             <Round
+              sessionId={id}
               id={rounds[0].id}
               roundNumber={rounds[0].round_number}
               completed={rounds[0].completed}
@@ -109,6 +111,7 @@ function LeagueSession() {
               otherRoundStatus={rounds[1].completed}
             />
             <Round
+              sessionId={id}
               id={rounds[1].id}
               roundNumber={rounds[1].round_number}
               completed={rounds[1].completed}
