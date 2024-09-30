@@ -22,6 +22,7 @@ const ScorecardFormFields = ({
   roundId,
   closeModal,
 }) => {
+  console.log(focusedPod);
   const [postRoundScores] = usePostRoundScoresMutation();
   const { control, handleSubmit } = useForm();
   const { data, isLoading } = useGetAchievementsQuery();
@@ -100,6 +101,7 @@ const ScorecardFormFields = ({
     const formattedData = {
       round: roundId,
       session: sessionId,
+      pod: focusedPod.podId,
       participants: participantList,
     };
 
@@ -119,7 +121,7 @@ const ScorecardFormFields = ({
       <Selector
         name="snack"
         control={control}
-        options={focusedPod}
+        options={focusedPod.participants}
         placeholder="Did Anyone Bring a Snack"
         isMulti
       />
@@ -133,7 +135,7 @@ const ScorecardFormFields = ({
       <Selector
         name="knockOuts"
         control={control}
-        options={focusedPod}
+        options={focusedPod.participants}
         placeholder="Did anyone who did not win knock out other players?"
         isMulti
       />
@@ -141,7 +143,7 @@ const ScorecardFormFields = ({
         name="winner"
         placeholder="Winner"
         control={control}
-        options={focusedPod}
+        options={focusedPod.participants}
       />
       <div className="flex gap-1">
         <TextInput classes="basis-9/12" placeholder="Winner's Commander" />

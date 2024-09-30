@@ -114,44 +114,54 @@ function RoundLobby({ roundId, sessionId }) {
 
 function FocusedRound({ completed, pods, sessionId, roundId }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [focusedPod, setFocusedPod] = useState();
+  const [focusedPod, setFocusedPod] = useState({});
   const roundParticipantList = Object.values(pods).flatMap((innerObject) =>
     Object.values(innerObject).flatMap((item) => item.participants)
   );
 
+  console.log(pods);
+
   function closeModal() {
-    setFocusedPod();
+    setFocusedPod({});
     setIsOpen(false);
   }
 
-  function openModal(pod) {
-    setFocusedPod(pod.map((p) => p.participants));
+  function openModal(pods, id) {
+    setFocusedPod({
+      participants: pods.map((p) => p.participants),
+      podId: id,
+    });
     setIsOpen(true);
   }
 
   if (completed) {
     return <div>This is a historic round thanks for visiting</div>;
   }
+
   return (
     <div className="grid grid-cols-2 gap-6">
       {Object.keys(pods).map((pod_id, index) => {
-        const pod = pods[pod_id];
+        const { pods: playerPods, submitted, id } = pods[pod_id];
         return (
           <div key={pod_id}>
             <div className="flex items-end justify-center content-center text-3xl mb-2">
               <div className="mr-4">Pod {index + 1}</div>
-              <i
-                className="text-xl fa-regular fa-circle-check text-sky-600 hover:text-sky-500"
-                onClick={() => openModal(pod)}
-              />
+              {submitted ? (
+                <i className="fa-regular fa-circle-check text-slate-600" />
+              ) : (
+                <i
+                  className="fa-regular fa-circle-exclamation text-sky-600 hover:text-sky-500"
+                  onClick={() => openModal(playerPods, id)}
+                />
+              )}
             </div>
             <div className="border border-blue-300 grid grid-cols-2 overflow-y-auto">
-              {pod.map(
+              {playerPods.map(
                 ({ id, participants: { name, total_points } }, index) => (
                   <div
                     key={id}
                     className={`p-8 border border-blue-300 grid grid-cols-1 overflow-y-auto text-center ${
-                      pod.length === 3 && index === 2 ? "col-span-2" : ""
+                      playerPods.length === 3 && index === 2 ? "col-span-2" : ""
                     }`}
                   >
                     <span className="text-xl">{name}</span>
