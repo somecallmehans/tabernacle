@@ -112,34 +112,49 @@ const ScorecardFormFields = ({
   };
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)}>
-      <div>1. Did anyone bring a snack</div>
-      <Selector name="snack" control={control} options={focusedPod} isMulti />
-      <div>2. Did anyone borrow a deck (3pts to deck owner)</div>
+    <form
+      onSubmit={handleSubmit(handleFormSubmit)}
+      className="flex flex-col gap-4"
+    >
+      <Selector
+        name="snack"
+        control={control}
+        options={focusedPod}
+        placeholder="Did Anyone Bring a Snack"
+        isMulti
+      />
       <Selector
         name="loanedDeck"
         control={control}
         options={roundParticipantList}
+        placeholder="Did anyone lend a deck to the winner?"
         isMulti
       />
-      <div>
-        3. Did any players who did not win the game knock out other players
-      </div>
       <Selector
         name="knockOuts"
         control={control}
         options={focusedPod}
+        placeholder="Did anyone who did not win knock out other players?"
         isMulti
       />
-      <div>4. Who won</div>
-      <Selector name="winner" control={control} options={focusedPod} />
-      <div>5. Who was their commander + color_id</div>
+      <Selector
+        name="winner"
+        placeholder="Winner"
+        control={control}
+        options={focusedPod}
+      />
       <div className="flex gap-1">
-        <TextInput classes="basis-9/12" />
-        <Selector name="color_id" control={control} options={[]} isMulti />
+        <TextInput classes="basis-9/12" placeholder="Winner's Commander" />
+        <Selector
+          name="color_id"
+          control={control}
+          options={[]}
+          placeholder="Color ID"
+          isMulti
+        />
       </div>
-      <div className="flex">
-        6. Were they last in turn order:{" "}
+      <div className="flex gap-2">
+        Were they last in turn order:{" "}
         <Controller
           name="lastInTurnOrder"
           control={control}
@@ -150,14 +165,19 @@ const ScorecardFormFields = ({
         />
       </div>
       <div>
-        7. Did they win via:
-        <div className="flex">
+        Did they win via:
+        <div className="grid grid-cols-2 gap-2">
           <Controller
             name="commanderDamage"
             control={control}
             defaultValue={false}
             render={({ field }) => (
-              <CheckBoxInput {...field} checked={field.value} />
+              <CheckBoxInput
+                {...field}
+                classes="flex items-center gap-2"
+                label="Commander Damage"
+                checked={field.value}
+              />
             )}
           />
           <Controller
@@ -165,7 +185,12 @@ const ScorecardFormFields = ({
             control={control}
             defaultValue={false}
             render={({ field }) => (
-              <CheckBoxInput {...field} checked={field.value} />
+              <CheckBoxInput
+                {...field}
+                classes="flex items-center gap-2"
+                label="Win The Game Effect"
+                checked={field.value}
+              />
             )}
           />
           <Controller
@@ -173,7 +198,12 @@ const ScorecardFormFields = ({
             control={control}
             defaultValue={false}
             render={({ field }) => (
-              <CheckBoxInput {...field} checked={field.value} />
+              <CheckBoxInput
+                {...field}
+                label="Having Zero Or Less Life"
+                classes="flex items-center gap-2"
+                checked={field.value}
+              />
             )}
           />
           <Controller
@@ -181,19 +211,24 @@ const ScorecardFormFields = ({
             control={control}
             defaultValue={false}
             render={({ field }) => (
-              <CheckBoxInput {...field} checked={field.value} />
+              <CheckBoxInput
+                {...field}
+                classes="flex items-center gap-2"
+                label="Lose The Game Effect"
+                checked={field.value}
+              />
             )}
           />
         </div>
       </div>
-      <div>8. Other deck building achievements</div>
       <Selector
         control={control}
         name="winnerDeckbuildingAchievements"
         options={data.data}
+        placeholder="Other Deck Building Achievements"
         isMulti
       />
-      <div className="mt-4">
+      <div className="mt-2">
         <StandardButton title="Submit" type="submit" />
       </div>
     </form>
@@ -240,7 +275,7 @@ export default function ScorecardModal({
               <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                 <DialogTitle
                   as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900"
+                  className="mb-2 text-xl font-medium leading-6 text-gray-900"
                 >
                   Submit Score Card
                 </DialogTitle>

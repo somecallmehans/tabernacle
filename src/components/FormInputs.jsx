@@ -2,9 +2,15 @@ import React, { forwardRef } from "react";
 import { Controller } from "react-hook-form";
 
 import Select from "react-select";
-import { Checkbox, Input } from "@headlessui/react";
+import { Checkbox, Input, Label, Field } from "@headlessui/react";
 
-export const Selector = ({ name, options, isMulti, control }) => {
+export const Selector = ({
+  name,
+  options,
+  isMulti,
+  control,
+  placeholder = "",
+}) => {
   return (
     <Controller
       name={name}
@@ -21,36 +27,42 @@ export const Selector = ({ name, options, isMulti, control }) => {
           getOptionValue={(option) => option.id}
           menuPortalTarget={document.body}
           styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+          placeholder={placeholder}
         />
       )}
     />
   );
 };
 
-export const CheckBoxInput = forwardRef(({ name, checked, onChange }, ref) => {
-  return (
-    <Checkbox
-      name={name}
-      checked={checked}
-      onChange={onChange}
-      ref={ref}
-      className="group block size-4 rounded border bg-white data-[checked]:bg-blue-500"
-    >
-      <svg
-        className="stroke-white opacity-0 group-data-[checked]:opacity-100"
-        viewBox="0 0 14 14"
-        fill="none"
-      >
-        <path
-          d="M3 8L6 11L11 3.5"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </Checkbox>
-  );
-});
+export const CheckBoxInput = forwardRef(
+  ({ name, checked, onChange, classes, label }, ref) => {
+    return (
+      <Field className={`${classes}`}>
+        <Checkbox
+          name={name}
+          checked={checked}
+          onChange={onChange}
+          ref={ref}
+          className="block size-6 rounded border border-slate-400 bg-white data-[checked]:bg-blue-500"
+        >
+          <svg
+            className="stroke-white opacity-0 group-data-[checked]:opacity-100"
+            viewBox="0 0 14 14"
+            fill="none"
+          >
+            <path
+              d="M3 8L6 11L11 3.5"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </Checkbox>
+        {label && <Label className="text-xs">{label}</Label>}
+      </Field>
+    );
+  }
+);
 
 export const TextInput = ({ name, type, placeholder = "", classes }) => {
   return (
