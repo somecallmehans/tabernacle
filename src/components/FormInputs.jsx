@@ -10,18 +10,21 @@ export const Selector = ({
   isMulti,
   control,
   placeholder = "",
+  register,
+  classes,
 }) => {
   return (
     <Controller
       name={name}
       control={control}
+      register={register}
       render={({ field }) => (
         <Select
           {...field}
           isMulti={isMulti}
           name={name}
           options={options}
-          className="basic-multi-select"
+          className={`basic-multi-select ${classes}`}
           classNamePrefix="select"
           getOptionLabel={(option) => option.name}
           getOptionValue={(option) => option.id}

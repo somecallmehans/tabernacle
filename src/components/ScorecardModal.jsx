@@ -23,8 +23,15 @@ const ScorecardFormFields = ({
   closeModal,
 }) => {
   const [postRoundScores] = usePostRoundScoresMutation();
-  const { control, handleSubmit } = useForm();
+  const {
+    control,
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm();
   const { data, isLoading } = useGetAchievementsQuery();
+
+  console.log(errors);
 
   if (isLoading) {
     return null;
@@ -35,16 +42,16 @@ const ScorecardFormFields = ({
     // winner is a participant dict
     // winnerDeckbuildingAchievements is a list of achievements
     const {
-      snack,
-      loanedDeck,
-      knockOuts,
+      snack = [],
+      loanedDeck = [],
+      knockOuts = [],
       winner: { id: winnerId },
       lastInTurnOrder,
       commanderDamage,
       winTheGameEffect,
       zeroOrLessLife,
       loseTheGameEffect,
-      winnerDeckbuildingAchievements,
+      winnerDeckbuildingAchievements = [],
     } = formData;
 
     const boolMap = [
@@ -80,12 +87,13 @@ const ScorecardFormFields = ({
       participantAchievementMap[winnerId]["achievements"].push(id)
     );
 
-    winnerDeckbuildingAchievements.forEach(({ id }) => {
-      participantAchievementMap[winnerId]["achievements"] = [
-        ...participantAchievementMap[winnerId]["achievements"],
-        id,
-      ];
-    });
+    // is this the same as above?
+    // winnerDeckbuildingAchievements.forEach(({ id }) => {
+    //   participantAchievementMap[winnerId]["achievements"] = [
+    //     ...participantAchievementMap[winnerId]["achievements"],
+    //     id,
+    //   ];
+    // });
 
     boolMap.forEach(({ condition, achievementId }) => {
       if (condition) {
@@ -113,15 +121,13 @@ const ScorecardFormFields = ({
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(handleFormSubmit)}
-      className="flex flex-col gap-4"
-    >
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col">
       <Selector
         name="snack"
         control={control}
         options={focusedPod.participants}
         placeholder="Did Anyone Bring a Snack"
+        classes="mb-2"
         isMulti
       />
       <Selector
@@ -129,6 +135,7 @@ const ScorecardFormFields = ({
         control={control}
         options={roundParticipantList}
         placeholder="Did anyone lend a deck to the winner?"
+        classes="mb-2"
         isMulti
       />
       <Selector
@@ -136,15 +143,21 @@ const ScorecardFormFields = ({
         control={control}
         options={focusedPod.participants}
         placeholder="Did anyone who did not win knock out other players?"
+        classes="mb-2"
         isMulti
       />
+      {errors?.winner && errors?.winner?.type === "required" && (
+        <span className="text-xs italic text-rose-400">Required</span>
+      )}
       <Selector
         name="winner"
         placeholder="Winner"
         control={control}
         options={focusedPod.participants}
+        register={{ ...register("winner", { required: true }) }}
+        classes="mb-2"
       />
-      <div className="flex gap-1">
+      <div className="flex gap-1 mb-2">
         <TextInput classes="basis-9/12" placeholder="Winner's Commander" />
         <Selector
           name="color_id"
@@ -154,7 +167,7 @@ const ScorecardFormFields = ({
           isMulti
         />
       </div>
-      <div className="flex gap-2">
+      <div className="mb-2 flex gap-2">
         Were they last in turn order:{" "}
         <Controller
           name="lastInTurnOrder"
@@ -165,8 +178,8 @@ const ScorecardFormFields = ({
           )}
         />
       </div>
-      <div>
-        Did they win via:
+      <div className="mb-2">
+        <span>Did they win via:</span>
         <div className="grid grid-cols-2 gap-2">
           <Controller
             name="commanderDamage"
