@@ -100,38 +100,45 @@ function LeagueSession() {
         <div className="text-2xl mb-2 underline">
           {formatMonthYear(month_year)} Season
         </div>
-        {sessions.map(({ id, created_at, rounds, closed }) => (
-          <div
-            className="border border-transparent border-b-slate-300 grid grid-cols-4 gap-4 mb-4 py-2 items-center"
-            key={id}
-          >
-            {formatDateString(created_at)}
-            {/* Sessions will always have 2 rounds, no more no less. */}
-            {console.log(rounds)}
-            <Round
-              sessionId={id}
-              id={rounds[0].id}
-              roundNumber={rounds[0].round_number}
-              completed={rounds[0].completed}
-              created_at={formatDateString(created_at)}
-              sessionClosed={closed}
-              otherRoundStatus={rounds[1].completed}
-            />
-            <Round
-              sessionId={id}
-              id={rounds[1].id}
-              previousRoundId={rounds[0].id}
-              roundNumber={rounds[1].round_number}
-              completed={rounds[1].completed}
-              created_at={formatDateString(created_at)}
-              sessionClosed={closed}
-              otherRoundStatus={rounds[0].completed}
-            />
-            <div className="justify-self-end">
-              <i className="fa-solid fa-trash-can mr-4" />
+        {sessions.map(({ id, created_at, rounds, closed }) => {
+          const roundOne = rounds.find(
+            ({ round_number }) => round_number === 1
+          );
+          const roundTwo = rounds.find(
+            ({ round_number }) => round_number === 2
+          );
+          return (
+            <div
+              className="border border-transparent border-b-slate-300 grid grid-cols-4 gap-4 mb-4 py-2 items-center"
+              key={id}
+            >
+              {formatDateString(created_at)}
+              {/* Sessions will always have 2 rounds, no more no less. */}
+              <Round
+                sessionId={id}
+                id={roundOne.id}
+                roundNumber={roundOne.round_number}
+                completed={roundOne.completed}
+                created_at={formatDateString(created_at)}
+                sessionClosed={closed}
+                otherRoundStatus={roundTwo.completed}
+              />
+              <Round
+                sessionId={id}
+                id={roundTwo.id}
+                previousRoundId={roundOne.id}
+                roundNumber={roundTwo.round_number}
+                completed={roundTwo.completed}
+                created_at={formatDateString(created_at)}
+                sessionClosed={closed}
+                otherRoundStatus={roundOne.completed}
+              />
+              <div className="justify-self-end">
+                <i className="fa-solid fa-trash-can mr-4" />
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
   });
