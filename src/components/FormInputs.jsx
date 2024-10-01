@@ -67,13 +67,29 @@ export const CheckBoxInput = forwardRef(
   }
 );
 
-export const TextInput = ({ name, type, placeholder = "", classes }) => {
+export const TextInput = ({
+  name,
+  type,
+  placeholder = "",
+  classes,
+  register,
+  control,
+  defaultValue = "",
+}) => {
   return (
-    <Input
-      placeholder={placeholder}
-      className={`${classes} border data-[hover]:shadow data-[focus]:bg-blue-100`}
+    <Controller
       name={name}
-      type={type}
+      control={control}
+      register={register}
+      defaultValue={defaultValue}
+      render={({ field }) => (
+        <Input
+          {...field}
+          placeholder={placeholder}
+          className={`${classes} border data-[hover]:shadow data-[focus]:bg-blue-100`}
+          type={type}
+        />
+      )}
     />
   );
 };

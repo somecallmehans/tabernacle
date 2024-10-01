@@ -231,9 +231,11 @@ export default function RoundPage() {
         <StandardButton title="Back" />
       </Link>
 
-      <Link to={"/league-session"}>
-        <StandardButton title="Close" action={() => handleCloseRound()} />
-      </Link>
+      {Object.keys(data).length > 0 && (
+        <Link to={"/league-session"}>
+          <StandardButton title="Close" action={() => handleCloseRound()} />
+        </Link>
+      )}
 
       <div className="mt-4">
         {!completed && data && Object.keys(data).length === 0 ? (

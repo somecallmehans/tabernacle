@@ -107,6 +107,7 @@ function LeagueSession() {
           >
             {formatDateString(created_at)}
             {/* Sessions will always have 2 rounds, no more no less. */}
+            {console.log(rounds)}
             <Round
               sessionId={id}
               id={rounds[0].id}

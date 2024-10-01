@@ -13,6 +13,7 @@ import { TextInput, CheckBoxInput, Selector } from "./FormInputs";
 import {
   useGetAchievementsQuery,
   usePostRoundScoresMutation,
+  useGetAllColorsQuery,
 } from "../api/apiSlice";
 
 const ScorecardFormFields = ({
@@ -23,6 +24,8 @@ const ScorecardFormFields = ({
   closeModal,
 }) => {
   const [postRoundScores] = usePostRoundScoresMutation();
+  const { data: colorsData, isLoading: colorsLoading } = useGetAllColorsQuery();
+
   const {
     control,
     handleSubmit,
@@ -31,9 +34,7 @@ const ScorecardFormFields = ({
   } = useForm();
   const { data, isLoading } = useGetAchievementsQuery();
 
-  console.log(errors);
-
-  if (isLoading) {
+  if (isLoading || colorsLoading) {
     return null;
   }
 
@@ -51,6 +52,8 @@ const ScorecardFormFields = ({
       winTheGameEffect,
       zeroOrLessLife,
       loseTheGameEffect,
+      winnersCommander,
+      colorId,
       winnerDeckbuildingAchievements = [],
     } = formData;
 
@@ -97,10 +100,17 @@ const ScorecardFormFields = ({
       (x) => participantAchievementMap[x]
     );
 
+    console.log(winnerId, winnersCommander, colorId);
+
     const formattedData = {
       round: roundId,
       session: sessionId,
       pod: focusedPod.podId,
+      winnerInfo: {
+        winner_id: winnerId,
+        color_id: colorId["id"],
+        commander_name: winnersCommander,
+      },
       participants: participantList,
     };
 
@@ -150,13 +160,20 @@ const ScorecardFormFields = ({
         classes="mb-2"
       />
       <div className="flex gap-1 mb-2">
-        <TextInput classes="basis-9/12" placeholder="Winner's Commander" />
-        <Selector
-          name="color_id"
+        <TextInput
+          classes="basis-2/3"
+          name="winnersCommander"
+          placeholder="Winner's Commander"
           control={control}
-          options={[]}
+          register={{ ...register("colorId", { required: true }) }}
+        />
+        <Selector
+          name="colorId"
+          control={control}
+          options={colorsData}
           placeholder="Color ID"
-          isMulti
+          classes="basis-1/3"
+          register={{ ...register("colorId", { required: true }) }}
         />
       </div>
       <div className="mb-2 flex gap-2">
@@ -278,7 +295,7 @@ export default function ScorecardModal({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+              <DialogPanel className="w-full max-w-xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                 <DialogTitle
                   as="h3"
                   className="mb-2 text-xl font-medium leading-6 text-gray-900"

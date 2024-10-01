@@ -12,6 +12,9 @@ export const apiSlice = createApi({
       query: () => "all_sessions/",
       providesTags: ["Sessions"],
     }),
+    getAllColors: builder.query({
+      query: () => "colors/",
+    }),
     getParticipants: builder.query({
       query: () => "participants/",
     }),
@@ -71,6 +74,7 @@ export const {
   useGetAllSessionsQuery,
   useGetParticipantsQuery,
   useGetPodsQuery,
+  useGetAllColorsQuery,
   usePostCreateSessionMutation,
   usePostBeginRoundMutation,
   usePostCloseRoundMutation,
