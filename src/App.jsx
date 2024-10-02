@@ -6,7 +6,7 @@ import Home from "./routes/home/Home";
 import LeaderBoard from "./routes/leaderboard/Leaderboard";
 import AchievementsPage from "./routes/achievements/Achievements";
 import LeagueRouter from "./routes/leagueSession/LeagueSession";
-import AchievementCrud from "./routes/crud/AchievementCrud";
+import ManagementContainer from "./routes/crud/ManagementContainer";
 
 function App() {
   return (
@@ -20,7 +20,7 @@ function App() {
           path="/crud"
           element={
             <ProtectedRoute>
-              <AchievementCrud />
+              <ManagementContainer />
             </ProtectedRoute>
           }
         />
