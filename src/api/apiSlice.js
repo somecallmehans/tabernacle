@@ -6,7 +6,7 @@ import authRoutes from "./authRoutes";
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: "http://127.0.0.1:8000/" }),
-  tagTypes: ["Sessions", "Pods", "Participants"],
+  tagTypes: ["Sessions", "Pods", "Participants", "Achievements"],
   endpoints: (builder) => ({
     ...getRoutes(builder),
     ...postRoutes(builder),
@@ -25,6 +25,7 @@ export const {
   usePostCloseRoundMutation,
   usePostRoundScoresMutation,
   usePostUpsertParticipantMutation,
+  usePostUpsertAchievementsMutation,
   useLoginMutation,
   useRefreshMutation,
 } = apiSlice;

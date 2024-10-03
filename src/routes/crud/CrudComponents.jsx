@@ -2,13 +2,14 @@ import React from "react";
 
 const buttonsClasses = "mx-2 text-slate-500 hover:text-sky-600";
 
-export function EditButtons({ editing, setEditing, deleteAction }) {
+export function EditButtons({ editing, setEditing, deleteAction, formName }) {
   return (
     <div>
       {editing ? (
         <div>
           <button
             type="submit"
+            name={formName}
             className="fa-solid fa-check mx-2 text-sky-600 hover:text-sky-400"
           />
           <i

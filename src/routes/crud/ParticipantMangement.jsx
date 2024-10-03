@@ -6,6 +6,8 @@ import { TextInput } from "../../components/FormInputs.jsx";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import StandardButton from "../../components/Button";
 
+const formName = "participantForm";
+
 import { usePostUpsertParticipantMutation } from "../../api/apiSlice";
 const ParticipantRow = ({
   id,
@@ -36,6 +38,7 @@ const ParticipantRow = ({
   return (
     <form
       onSubmit={handleSubmit(handleEdit)}
+      name={formName}
       className="flex justify-between mb-2 px-4 text-lg border-b border-slate-400"
     >
       <TextInput
@@ -53,8 +56,8 @@ const ParticipantRow = ({
       <EditButtons
         editing={editing}
         setEditing={createCancel || setEditing}
-        editAction={handleEdit}
         deleteAction={handleDelete}
+        formName={formName}
       />
     </form>
   );

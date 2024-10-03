@@ -1,6 +1,7 @@
 export default (builder) => ({
   getAchievements: builder.query({
     query: () => "achievements_restrictions/",
+    providesTags: ["Achievements"],
   }),
   getAllSessions: builder.query({
     query: () => "all_sessions/",
