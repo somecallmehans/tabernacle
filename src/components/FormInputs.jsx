@@ -90,6 +90,7 @@ export const TextInput = ({
           className={`${classes} `}
           type={type}
           disabled={disabled}
+          autoComplete="off"
         />
       )}
     />

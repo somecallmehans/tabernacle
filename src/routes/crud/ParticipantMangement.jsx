@@ -12,8 +12,10 @@ const ParticipantRow = ({
   name,
   postUpsertParticipant,
   placeholder = "",
+  openEdit,
+  createCancel,
 }) => {
-  const [editing, setEditing] = useState();
+  const [editing, setEditing] = useState(openEdit);
   const { control, register, handleSubmit } = useForm();
 
   const handleEdit = async (formData) => {
@@ -46,10 +48,11 @@ const ParticipantRow = ({
         }`}
         disabled={!editing}
         register={{ ...register("participantName") }}
+        type="text"
       />
       <EditButtons
         editing={editing}
-        setEditing={setEditing}
+        setEditing={createCancel || setEditing}
         editAction={handleEdit}
         deleteAction={handleDelete}
       />
@@ -81,6 +84,8 @@ export default function Page() {
           name=""
           postUpsertParticipant={postUpsertParticipant}
           placeholder="Add Participant Name"
+          createCancel={() => setShowCreate(false)}
+          openEdit
         />
       )}
       {participants.map(({ id, name }) => (

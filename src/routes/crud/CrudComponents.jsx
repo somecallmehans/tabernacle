@@ -2,7 +2,7 @@ import React from "react";
 
 const buttonsClasses = "mx-2 text-slate-500 hover:text-sky-600";
 
-export function EditButtons({ editing, setEditing, editAction, deleteAction }) {
+export function EditButtons({ editing, setEditing, deleteAction }) {
   return (
     <div>
       {editing ? (
@@ -24,7 +24,7 @@ export function EditButtons({ editing, setEditing, editAction, deleteAction }) {
             className="fa-solid fa-pencil mx-2 text-slate-500 hover:text-sky-600"
           />
           <i
-            onClick={deleteAction}
+            onClick={() => deleteAction()}
             className={`fa-solid fa-trash ${buttonsClasses}`}
           />
         </div>
