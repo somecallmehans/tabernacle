@@ -35,5 +35,6 @@ export default (builder) => ({
       method: "POST",
       body: body,
     }),
+    invalidatesTags: ["Participants"],
   }),
 });

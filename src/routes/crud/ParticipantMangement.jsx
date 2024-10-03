@@ -22,8 +22,13 @@ const ParticipantRow = ({
     setEditing(false);
   };
 
-  const handleDelete = (data) => {
-    console.log("handling delete");
+  // This will do for now but there needs to be a prompty to prevent accidental deletions
+  const handleDelete = async () => {
+    await postUpsertParticipant({
+      id: id,
+      name: name,
+      deleted: true,
+    }).unwrap();
   };
 
   return (

@@ -11,6 +11,7 @@ export default (builder) => ({
   }),
   getParticipants: builder.query({
     query: () => "participants/",
+    providesTags: ["Participants"],
   }),
   getPods: builder.query({
     query: (params) => `pods/${params}/`,
