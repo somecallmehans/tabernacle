@@ -29,4 +29,11 @@ export default (builder) => ({
     }),
     invalidatesTags: ["Pods"],
   }),
+  postUpsertParticipant: builder.mutation({
+    query: (body) => ({
+      url: "upsert_participant/",
+      method: "POST",
+      body: body,
+    }),
+  }),
 });

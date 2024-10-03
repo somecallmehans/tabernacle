@@ -161,7 +161,7 @@ const ScorecardFormFields = ({
       />
       <div className="flex gap-1 mb-2">
         <TextInput
-          classes="basis-2/3"
+          classes="basis-2/3 border data-[hover]:shadow data-[focus]:bg-blue-100"
           name="winnersCommander"
           placeholder="Winner's Commander"
           control={control}

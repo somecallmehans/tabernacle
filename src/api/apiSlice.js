@@ -24,6 +24,7 @@ export const {
   usePostBeginRoundMutation,
   usePostCloseRoundMutation,
   usePostRoundScoresMutation,
+  usePostUpsertParticipantMutation,
   useLoginMutation,
   useRefreshMutation,
 } = apiSlice;

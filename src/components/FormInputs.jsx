@@ -71,10 +71,11 @@ export const TextInput = ({
   name,
   type,
   placeholder = "",
-  classes,
+  classes = "",
   register,
   control,
   defaultValue = "",
+  disabled,
 }) => {
   return (
     <Controller
@@ -86,8 +87,9 @@ export const TextInput = ({
         <Input
           {...field}
           placeholder={placeholder}
-          className={`${classes} border data-[hover]:shadow data-[focus]:bg-blue-100`}
+          className={`${classes} `}
           type={type}
+          disabled={disabled}
         />
       )}
     />
