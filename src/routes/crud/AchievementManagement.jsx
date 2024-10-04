@@ -31,7 +31,6 @@ const AchievementRow = ({
 
   const handleEdit = async (formData) => {
     const { achievementName, achievementPointValue } = formData;
-    console.log(formData);
     await postUpsertAchievements({
       id: id,
       name: achievementName || name,
@@ -39,10 +38,17 @@ const AchievementRow = ({
       parent_id: parent_id,
     }).unwrap();
     setEditing(false);
+    setCreateChild(false);
   };
 
-  const handleDelete = () => {
-    console.log("HANDLING DELETE");
+  const handleDelete = async () => {
+    await postUpsertAchievements({
+      id: id,
+      name: name,
+      point_value: point_value,
+      parent_id: parent_id,
+      deleted: true,
+    });
   };
 
   return (
@@ -57,7 +63,7 @@ const AchievementRow = ({
           type="text"
           control={control}
           register={{ ...register("achievementName") }}
-          defaultValue={name}
+          defaultValue={name || ""}
           classes={`text-sm grow bg-transparent data-[focus]:outline-none ${
             editing ? "text-sky-600" : ""
           }`}
@@ -69,7 +75,7 @@ const AchievementRow = ({
           type="number"
           control={control}
           register={{ ...register("achievementPointValue") }}
-          defaultValue={point_value}
+          defaultValue={point_value || ""}
           classes={`max-w-10 bg-transparent data-[focus]:outline-none ${
             editing ? "text-sky-600" : ""
           }`}
@@ -108,11 +114,14 @@ const AchievementRow = ({
       {children.length > 0 &&
         children.map(
           ({
+            id: childId,
             name: childName,
             point_value: childPointValue,
             parent: { id: parent_id },
           }) => (
             <AchievementRow
+              key={childId}
+              id={childId}
               name={childName}
               point_value={childPointValue}
               classes="ml-4"
@@ -155,15 +164,14 @@ export default function Page() {
         {Object.keys(achievements?.map).map((x) => {
           const achievementsData = achievements?.map[x];
           return achievementsData.map(({ id, name, children, point_value }) => (
-            <React.Fragment>
-              <AchievementRow
-                id={id}
-                postUpsertAchievements={postUpsertAchievements}
-                name={name}
-                point_value={point_value}
-                children={children}
-              />
-            </React.Fragment>
+            <AchievementRow
+              key={id}
+              id={id}
+              postUpsertAchievements={postUpsertAchievements}
+              name={name}
+              point_value={point_value}
+              children={children}
+            />
           ));
         })}
       </div>
