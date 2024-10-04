@@ -38,7 +38,7 @@ export default (builder) => ({
     invalidatesTags: ["Participants"],
   }),
   postUpsertAchievements: builder.mutation({
-    queyr: (body) => ({
+    query: (body) => ({
       url: "upsert_achievements/",
       method: "POST",
       body: body,
