@@ -10,6 +10,9 @@ export default (builder) => ({
   getAllColors: builder.query({
     query: () => "colors/",
   }),
+  getSessionByDate: builder.query({
+    query: (params) => `sessions/${params}/`,
+  }),
   getParticipants: builder.query({
     query: () => "participants/",
     providesTags: ["Participants"],

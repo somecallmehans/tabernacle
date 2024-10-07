@@ -1,24 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   useGetAchievementsQuery,
   useGetAllSessionsQuery,
-} from "../../api/apiSlice";
-
-import {
   useGetAchievementsForSessionQuery,
   usePostUpsertEarnedMutation,
+  useGetSessionByDateQuery,
 } from "../../api/apiSlice";
+
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { Selector } from "../../components/FormInputs";
 import { EditButtons, SimpleSelect, HelpfulWrapper } from "./CrudComponents";
 import { formatDateString } from "../../helpers/dateHelpers";
 
+const DisplayCol = ({ title, value }) => (
+  <div className="flex flex-col items-center">
+    <span className="text-xs">{title}</span>
+    <span>{value || "--"}</span>
+  </div>
+);
+
 const EditAchievement = ({
   id = "",
   participantId,
+  roundId,
   name = "",
-  point_value = "--",
+  point_value,
   allAchievements,
   earned_id = "",
   postUpsertEarned,
@@ -26,22 +33,26 @@ const EditAchievement = ({
   openEdit,
   formName,
   sessionId,
+  parent,
+  parentMap,
+  setToggleCreate,
 }) => {
   const [editing, setEditing] = useState(openEdit);
   const { control, register, handleSubmit } = useForm();
 
+  const displayPoints = parentMap[parent?.id]?.point_value || point_value;
+
   const handleCreate = async (formData) => {
-    console.log(round);
     const {
       participantAchievement: { id: achievementId },
     } = formData;
-    console.log(achievementId, sessionId, participantId);
     await postUpsertEarned({
       round: roundId,
       achievement: achievementId,
       session: sessionId,
       participant: participantId,
     }).unwrap();
+    setToggleCreate(false);
   };
 
   const handleOnChangeEdit = async (data) => {
@@ -52,7 +63,12 @@ const EditAchievement = ({
     }).unwrap();
   };
 
-  const handleOnChangeDelete = () => {};
+  const handleOnChangeDelete = async () => {
+    await postUpsertEarned({
+      earned_id: earned_id,
+      deleted: true,
+    }).unwrap();
+  };
 
   return (
     <form
@@ -65,23 +81,19 @@ const EditAchievement = ({
         control={control}
         defaultValue={{ name: name, id: id }}
         options={allAchievements.data}
-        classes="grow"
+        classes="basis-2/3"
         onChange={openEdit ? undefined : handleOnChangeEdit}
         disabled={!editing}
         register={{ ...register("participantAchievement") }}
       />
-      <div className="flex flex-col items-center">
-        <span className="text-xs">Round Earned</span>
-        <span>{round?.round_number}</span>
-      </div>
-      <div className="flex flex-col">
-        <span className="text-xs">Points</span>
-        <span>{point_value}</span>
-      </div>
+      <DisplayCol title="Round Earned" value={round?.round_number} />
+      <DisplayCol title="Points" value={displayPoints} />
+
       <EditButtons
         formName={formName}
         editing={editing}
         setEditing={setEditing}
+        deleteAction={handleOnChangeDelete}
       />
     </form>
   );
@@ -89,6 +101,7 @@ const EditAchievement = ({
 
 const EarnedRow = ({
   participantId,
+  roundId,
   name,
   totalPoints,
   achievements,
@@ -98,6 +111,10 @@ const EarnedRow = ({
 }) => {
   const [toggle, showToggle] = useState();
   const [toggleCreate, setToggleCreate] = useState();
+
+  const parentMap = allAchievements.data
+    .filter(({ parent }) => !parent)
+    .reduce((acc, curr) => ({ ...acc, [curr.id]: curr }));
 
   return (
     <React.Fragment>
@@ -121,22 +138,26 @@ const EarnedRow = ({
       </div>
       {toggleCreate && (
         <EditAchievement
-          round={{ round_number: 1 }}
+          roundId={roundId}
           allAchievements={allAchievements}
           postUpsertEarned={postUpsertEarned}
           openEdit
           formName="createAchievement"
           participantId={participantId}
           sessionId={sessionId}
+          parentMap={parentMap}
+          setToggleCreate={setToggleCreate}
         />
       )}
       {toggle &&
         achievements.map((achievement) => (
           <EditAchievement
             {...achievement}
+            key={achievement?.id}
             allAchievements={allAchievements}
             postUpsertEarned={postUpsertEarned}
             formName="editAchievement"
+            parentMap={parentMap}
           />
         ))}
     </React.Fragment>
@@ -148,36 +169,34 @@ export default function Page() {
   const [selectSession, setSelectSession] = useState(undefined);
   const [skip, setSkip] = useState(true);
 
-  console.log(selectSession, selectSession);
   const { data: earnedData, isLoading: earnedLoading } =
     useGetAchievementsForSessionQuery(selectSession, { skip });
   const { data: allAchievements, isLoading: achievementsLoading } =
     useGetAchievementsQuery();
   const { data: allSessions, isLoading: sessionsLoading } =
     useGetAllSessionsQuery();
-
-  useEffect(() => {
-    if (!sessionsLoading) setSelectMonth(Object.keys(allSessions)[0]);
-  }, [sessionsLoading]);
+  const { data: currentSession, isLoading: currentSessionLoading } =
+    useGetSessionByDateQuery(selectMonth, { skip: !selectMonth });
 
   const [postUpsertEarned] = usePostUpsertEarnedMutation();
 
-  if (earnedLoading || achievementsLoading || sessionsLoading) {
+  if (
+    earnedLoading ||
+    achievementsLoading ||
+    sessionsLoading ||
+    currentSessionLoading
+  ) {
     return <LoadingSpinner />;
   }
 
-  const MM_YY =
-    allSessions &&
-    Object.keys(allSessions).map((x) => ({ label: x, value: x }));
+  const MM_YY = Object.keys(allSessions)?.map((x) => ({ label: x, value: x }));
   const sessionsMap =
-    allSessions &&
     selectMonth &&
-    allSessions[selectMonth].map(({ id, created_at }) => ({
+    allSessions[selectMonth]?.map(({ id, created_at }) => ({
       label: formatDateString(created_at),
       value: id,
     }));
 
-  console.log(earnedData);
   return (
     <div className="p-4">
       <div className="flex gap-4 mb-2">
@@ -208,6 +227,7 @@ export default function Page() {
             <EarnedRow
               participantId={id}
               sessionId={selectSession}
+              roundId={currentSession?.rounds[0]?.id}
               name={name}
               totalPoints={total_points}
               achievements={achievements}

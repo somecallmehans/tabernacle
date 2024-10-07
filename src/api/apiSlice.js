@@ -15,12 +15,16 @@ export const apiSlice = createApi({
 });
 
 export const {
+  // GETS
   useGetAchievementsQuery,
   useGetAllSessionsQuery,
   useGetParticipantsQuery,
   useGetPodsQuery,
   useGetAllColorsQuery,
   useGetAchievementsForSessionQuery,
+  useGetSessionByDateQuery,
+
+  // POSTS
   usePostCreateSessionMutation,
   usePostBeginRoundMutation,
   usePostCloseRoundMutation,
@@ -28,6 +32,8 @@ export const {
   usePostUpsertParticipantMutation,
   usePostUpsertAchievementsMutation,
   usePostUpsertEarnedMutation,
+
+  // AUTH
   useLoginMutation,
   useRefreshMutation,
 } = apiSlice;

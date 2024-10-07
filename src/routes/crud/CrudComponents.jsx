@@ -61,8 +61,6 @@ export function SimpleSelect({
 }
 
 export function HelpfulWrapper({ hasData, message, children }) {
-  console.log(hasData);
-
   if (hasData) {
     return <React.Fragment>{children}</React.Fragment>;
   }
