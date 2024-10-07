@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useGetParticipantsQuery } from "../../api/apiSlice";
+import {
+  useGetParticipantsQuery,
+  usePostUpsertParticipantMutation,
+} from "../../api/apiSlice";
 import { EditButtons } from "./CrudComponents.jsx";
 import { TextInput } from "../../components/FormInputs.jsx";
 import LoadingSpinner from "../../components/LoadingSpinner";
@@ -8,7 +11,6 @@ import StandardButton from "../../components/Button";
 
 const formName = "participantForm";
 
-import { usePostUpsertParticipantMutation } from "../../api/apiSlice";
 const ParticipantRow = ({
   id,
   name,
@@ -83,21 +85,24 @@ export default function Page() {
         />
       </div>
       {showCreate && (
-        <ParticipantRow
-          name=""
-          postUpsertParticipant={postUpsertParticipant}
-          placeholder="Add Participant Name"
-          createCancel={() => setShowCreate(false)}
-          openEdit
-        />
+        <div className="px-64">
+          <ParticipantRow
+            name=""
+            postUpsertParticipant={postUpsertParticipant}
+            placeholder="Add Participant Name"
+            createCancel={() => setShowCreate(false)}
+            openEdit
+          />
+        </div>
       )}
       {participants.map(({ id, name }) => (
-        <ParticipantRow
-          key={id}
-          id={id}
-          name={name}
-          postUpsertParticipant={postUpsertParticipant}
-        />
+        <div key={id} className="px-64">
+          <ParticipantRow
+            id={id}
+            name={name}
+            postUpsertParticipant={postUpsertParticipant}
+          />
+        </div>
       ))}
     </div>
   );

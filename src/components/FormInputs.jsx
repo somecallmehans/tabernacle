@@ -12,6 +12,9 @@ export const Selector = ({
   placeholder = "",
   register,
   classes,
+  defaultValue = {},
+  onChange,
+  disabled = false,
 }) => {
   return (
     <Controller
@@ -31,6 +34,12 @@ export const Selector = ({
           menuPortalTarget={document.body}
           styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
           placeholder={placeholder}
+          defaultValue={defaultValue}
+          onChange={(selectedOption) => {
+            field.onChange(selectedOption);
+            if (onChange) onChange(selectedOption); // Calls the custom onChange if provided
+          }}
+          isDisabled={disabled}
         />
       )}
     />

@@ -1,8 +1,15 @@
 import React from "react";
+import Select from "react-select";
 
 const buttonsClasses = "mx-2 text-slate-500 hover:text-sky-600";
 
-export function EditButtons({ editing, setEditing, deleteAction, formName }) {
+export function EditButtons({
+  editing,
+  setEditing,
+  deleteAction,
+  formName,
+  disabled,
+}) {
   return (
     <div>
       {editing ? (
@@ -10,7 +17,8 @@ export function EditButtons({ editing, setEditing, deleteAction, formName }) {
           <button
             type="submit"
             name={formName}
-            className="fa-solid fa-check mx-2 text-sky-600 hover:text-sky-400"
+            disabled={disabled}
+            className="fa-solid fa-check mx-2 text-sky-600 hover:text-sky-400 disabled:text-slate-500"
           />
           <i
             onClick={() => setEditing(false)}
@@ -34,4 +42,30 @@ export function EditButtons({ editing, setEditing, deleteAction, formName }) {
   );
 }
 
-export default {};
+export function SimpleSelect({
+  options,
+  placeholder,
+  defaultValue,
+  classes,
+  onChange,
+}) {
+  return (
+    <Select
+      options={options}
+      placeholder={placeholder}
+      defaultValue={defaultValue}
+      className={`${classes}`}
+      onChange={onChange}
+    />
+  );
+}
+
+export function HelpfulWrapper({ hasData, message, children }) {
+  console.log(hasData);
+
+  if (hasData) {
+    return <React.Fragment>{children}</React.Fragment>;
+  }
+
+  return <div className="text-2xl text-slate-400">{message}</div>;
+}

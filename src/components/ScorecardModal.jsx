@@ -100,8 +100,6 @@ const ScorecardFormFields = ({
       (x) => participantAchievementMap[x]
     );
 
-    console.log(winnerId, winnersCommander, colorId);
-
     const formattedData = {
       round: roundId,
       session: sessionId,

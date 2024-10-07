@@ -3,7 +3,7 @@ import {
   useGetAchievementsQuery,
   usePostUpsertAchievementsMutation,
 } from "../../api/apiSlice";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 import StandardButton from "../../components/Button";
 import { TextInput } from "../../components/FormInputs";
@@ -19,7 +19,6 @@ const AchievementRow = ({
   classes,
   placeholder = "",
   postUpsertAchievements,
-  createCancel,
   parent_id,
   children = [],
   openEdit,
@@ -152,29 +151,29 @@ export default function Page() {
           title={showCreate ? "Cancel Create" : "Create New"}
           action={() => setShowCreate(!showCreate)}
         />
-        {showCreate && (
-          <AchievementRow
-            name=""
-            point_value=""
-            postUpsertAchievements={postUpsertAchievements}
-            placeholder="Achievement Name"
-            openEdit
-          />
-        )}
-        {Object.keys(achievements?.map).map((x) => {
-          const achievementsData = achievements?.map[x];
-          return achievementsData.map(({ id, name, children, point_value }) => (
-            <AchievementRow
-              key={id}
-              id={id}
-              postUpsertAchievements={postUpsertAchievements}
-              name={name}
-              point_value={point_value}
-              children={children}
-            />
-          ));
-        })}
       </div>
+      {showCreate && (
+        <AchievementRow
+          name=""
+          point_value=""
+          postUpsertAchievements={postUpsertAchievements}
+          placeholder="Achievement Name"
+          openEdit
+        />
+      )}
+      {Object.keys(achievements?.map).map((x) => {
+        const achievementsData = achievements?.map[x];
+        return achievementsData.map(({ id, name, children, point_value }) => (
+          <AchievementRow
+            key={id}
+            id={id}
+            postUpsertAchievements={postUpsertAchievements}
+            name={name}
+            point_value={point_value}
+            children={children}
+          />
+        ));
+      })}
     </div>
   );
 }
