@@ -18,4 +18,8 @@ export default (builder) => ({
     query: (params) => `pods/${params}/`,
     providesTags: ["Pods"],
   }),
+  getAchievementsForSession: builder.query({
+    query: (params) => `earned_for_session/${params}/`,
+    providesTags: ["Earned"],
+  }),
 });

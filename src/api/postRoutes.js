@@ -45,4 +45,12 @@ export default (builder) => ({
     }),
     invalidatesTags: ["Achievements"],
   }),
+  postUpsertEarned: builder.mutation({
+    query: (body) => ({
+      url: "upsert_earned/",
+      method: "POST",
+      body: body,
+    }),
+    invalidatesTags: ["Earned"],
+  }),
 });
