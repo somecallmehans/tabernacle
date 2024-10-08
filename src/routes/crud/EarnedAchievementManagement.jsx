@@ -108,6 +108,7 @@ const EarnedRow = ({
   allAchievements,
   postUpsertEarned,
   sessionId,
+  selectMonth,
 }) => {
   const [toggle, showToggle] = useState();
   const [toggleCreate, setToggleCreate] = useState();
@@ -116,13 +117,27 @@ const EarnedRow = ({
     .filter(({ parent }) => !parent)
     .reduce((acc, curr) => ({ ...acc, [curr.id]: curr }));
 
+  const totalAchievementValue = achievements?.reduce(
+    (acc, curr) =>
+      acc + (curr?.point_value || parentMap[curr?.parent?.id]?.point_value),
+    0
+  );
+
   return (
     <React.Fragment>
       <div className="flex justify-between mb-2 px-4 text-lg border-b border-slate-400">
-        <div className="flex basis-1/2 justify-between">
-          <div>{name}</div> <div>{totalPoints} Points</div>
+        <div className="flex gap-12 basis-3/4 justify-between">
+          <div>{name}</div>
+          <div className="flex gap-4">
+            <div>
+              <span className="font-bold">{totalAchievementValue} </span>Points
+              For Session
+            </div>
+            <div>
+              <span className="font-bold">{totalPoints}</span> Points Total
+            </div>
+          </div>
         </div>
-
         <div>
           {achievements.length > 0 && (
             <i
@@ -167,15 +182,17 @@ const EarnedRow = ({
 export default function Page() {
   const [selectMonth, setSelectMonth] = useState(undefined);
   const [selectSession, setSelectSession] = useState(undefined);
-  const [skip, setSkip] = useState(true);
 
   const { data: earnedData, isLoading: earnedLoading } =
-    useGetAchievementsForSessionQuery(selectSession, { skip });
+    useGetAchievementsForSessionQuery(selectSession, {
+      skip: !selectSession,
+    });
   const { data: allAchievements, isLoading: achievementsLoading } =
     useGetAchievementsQuery();
   const { data: allSessions, isLoading: sessionsLoading } =
     useGetAllSessionsQuery();
-  const { data: currentSession, isLoading: currentSessionLoading } =
+
+  const { data: currentOpenSession, isLoading: currentSessionLoading } =
     useGetSessionByDateQuery(selectMonth, { skip: !selectMonth });
 
   const [postUpsertEarned] = usePostUpsertEarnedMutation();
@@ -190,12 +207,16 @@ export default function Page() {
   }
 
   const MM_YY = Object.keys(allSessions)?.map((x) => ({ label: x, value: x }));
-  const sessionsMap =
+  const sessionDates =
     selectMonth &&
     allSessions[selectMonth]?.map(({ id, created_at }) => ({
       label: formatDateString(created_at),
       value: id,
     }));
+  const sessionMap = sessionDates?.reduce(
+    (acc, curr) => ({ ...acc, [curr.value]: curr }),
+    {}
+  );
 
   return (
     <div className="p-4">
@@ -204,35 +225,46 @@ export default function Page() {
           placeholder="Select Month"
           options={MM_YY}
           classes="basis-1/4"
-          onChange={(obj) => setSelectMonth(obj.value)}
+          onChange={(obj) => {
+            setSelectMonth(obj.value);
+            setSelectSession(undefined);
+          }}
           defaultValue={{ label: selectMonth, value: selectMonth }}
         />
         <SimpleSelect
+          key={`${selectSession}-key`}
           placeholder="Select Session"
-          options={sessionsMap}
+          options={sessionDates}
           onChange={(obj) => {
             setSelectSession(obj.value);
-            setSkip(false);
           }}
           classes="basis-1/4"
-          defaultValue={{ label: selectSession, value: selectSession }}
+          defaultValue={{
+            label: selectSession && sessionMap[selectSession]?.label,
+            value: selectSession && sessionMap[selectSession]?.value,
+          }}
         />
       </div>
       <HelpfulWrapper
         hasData={!!earnedData?.length}
-        message="This session doesn't have any information associated with it, please pick another one."
+        message={
+          !selectMonth && !selectSession
+            ? "Please choose a session month and date to begin"
+            : "This session doesn't have any information associated with it, please pick another one."
+        }
       >
         {earnedData?.map(({ id, name, total_points, achievements }) => (
           <div key={id} className="px-16">
             <EarnedRow
               participantId={id}
               sessionId={selectSession}
-              roundId={currentSession?.rounds[0]?.id}
+              roundId={currentOpenSession?.rounds[0]?.id}
               name={name}
               totalPoints={total_points}
               achievements={achievements}
               allAchievements={allAchievements}
               postUpsertEarned={postUpsertEarned}
+              selectMonth={selectMonth}
             />
           </div>
         ))}

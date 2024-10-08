@@ -12,7 +12,7 @@ export const Selector = ({
   placeholder = "",
   register,
   classes,
-  defaultValue = {},
+  defaultValue,
   onChange,
   disabled = false,
 }) => {

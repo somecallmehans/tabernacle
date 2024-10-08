@@ -1,7 +1,7 @@
 export default (builder) => ({
   postCreateSession: builder.mutation({
     query: () => ({
-      url: "sessions/",
+      url: "sessions/new/",
       method: "POST",
     }),
     invalidatesTags: ["Sessions"],
