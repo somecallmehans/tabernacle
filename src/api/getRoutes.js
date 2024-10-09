@@ -25,4 +25,10 @@ export default (builder) => ({
     query: (params) => `earned_for_session/${params}/`,
     providesTags: ["Earned"],
   }),
+  getAchievementsForMonth: builder.query({
+    query: (params) => `achievements_for_month/${params}/`,
+  }),
+  getUniqueMonths: builder.query({
+    query: () => "unique_months/",
+  }),
 });

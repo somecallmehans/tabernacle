@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import getRoutes from "./getRoues";
+import getRoutes from "./getRoutes";
 import postRoutes from "./postRoutes";
 import authRoutes from "./authRoutes";
 
@@ -23,6 +23,8 @@ export const {
   useGetAllColorsQuery,
   useGetAchievementsForSessionQuery,
   useGetSessionByDateQuery,
+  useGetAchievementsForMonthQuery,
+  useGetUniqueMonthsQuery,
 
   // POSTS
   usePostCreateSessionMutation,
