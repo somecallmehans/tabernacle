@@ -3,6 +3,7 @@ import ProtectedRoute from "./routes/routeHelper";
 
 import Navbar from "./components/Navbar";
 import Home from "./routes/home/Home";
+import FAQ from "./routes/home/FAQ";
 import LeaderBoard from "./routes/leaderboard/Leaderboard";
 import AchievementsPage from "./routes/achievements/Achievements";
 import LeagueRouter from "./routes/leagueSession/LeagueSession";
@@ -14,10 +15,11 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/faq" element={<FAQ />} />
         <Route path="/leaderboard" element={<LeaderBoard />} />
         <Route path="/achievements" element={<AchievementsPage />} />
         <Route
-          path="/crud"
+          path="/management"
           element={
             <ProtectedRoute>
               <ManagementContainer />

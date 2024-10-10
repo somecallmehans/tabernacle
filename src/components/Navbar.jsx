@@ -5,11 +5,12 @@ import LoginPopover from "./LoginPopover";
 
 const navLinks = [
   { id: 1, name: "Home", to: "/", admin: false },
-  { id: 2, name: "Leaderboard", to: "/leaderboard", admin: false },
-  { id: 3, name: "Achievements", to: "/achievements", admin: false },
-  { id: 4, name: "League Management", to: "/crud", admin: true },
+  { id: 2, name: "FAQ", to: "/faq", admin: false },
+  { id: 3, name: "Leaderboard", to: "/leaderboard", admin: false },
+  { id: 4, name: "Achievements", to: "/achievements", admin: false },
+  { id: 5, name: "League Management", to: "/management", admin: true },
   {
-    id: 5,
+    id: 6,
     name: "Season Management",
     to: "/league-session",
     admin: true,
