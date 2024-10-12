@@ -17,9 +17,7 @@ const navLinks = [
   },
 ];
 
-export default function Navbar() {
-  const [loggedIn, setLoggedIn] = useState(!!auth.getToken());
-
+export default function Navbar({ loggedIn, setLoggedIn }) {
   return (
     <nav className="container flex p-5 bg-slate-200 max-w-full">
       <div className="flex items-center text-base">

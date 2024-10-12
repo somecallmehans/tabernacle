@@ -85,7 +85,7 @@ export default function LoginPopover({ loggedIn, setLoggedIn }) {
       }}
       className="self-end mr-2 rounded bg-sky-600 py-2 px-4 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700"
     >
-      Log Out
+      Logout
     </Button>
   );
 }

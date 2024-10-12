@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import ProtectedRoute from "./routes/routeHelper";
+import PrivateRoute from "./routes/routeHelper";
+import auth from "./helpers/authHelpers";
 
 import Navbar from "./components/Navbar";
 import Home from "./routes/home/Home";
@@ -10,9 +12,11 @@ import LeagueRouter from "./routes/leagueSession/LeagueSession";
 import ManagementContainer from "./routes/crud/ManagementContainer";
 
 function App() {
+  const [loggedIn, setLoggedIn] = useState(!!auth.getToken());
+
   return (
     <>
-      <Navbar />
+      <Navbar loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/faq" element={<FAQ />} />
@@ -21,17 +25,17 @@ function App() {
         <Route
           path="/management"
           element={
-            <ProtectedRoute>
+            <PrivateRoute loggedIn={loggedIn}>
               <ManagementContainer />
-            </ProtectedRoute>
+            </PrivateRoute>
           }
         />
         <Route
           path="/league-session/*"
           element={
-            <ProtectedRoute>
+            <PrivateRoute loggedIn={loggedIn}>
               <LeagueRouter />
-            </ProtectedRoute>
+            </PrivateRoute>
           }
         />
         <Route path="*" element={<p>404 Error - Nothing here...</p>} />
