@@ -14,8 +14,11 @@ export default function Home() {
         Basically, Commander League is a month-long tournament of deck building
         challenges roughly weighted by difficulty. Commander League offers a fun
         and challenging experience for intermediate and advanced players.
-        Beginners are welcome too and will have fun! But note: players are
-        empowered to use any and all strategies in pursuit of league points.
+        Beginners are welcome too and will have fun! But note:{" "}
+        <u>
+          players are empowered to use any and all strategies in pursuit of
+          league points.
+        </u>
       </p>
       <p className="my-4">
         Each league begins on the first Sunday of the month, repeats weekly, and

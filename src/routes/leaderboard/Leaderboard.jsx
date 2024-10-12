@@ -29,17 +29,15 @@ export default function Leaderboard() {
   return (
     <div className="p-8">
       <PageTitle title="Current Month Leaderboard" />
-      <div>
-        <SimpleSelect
-          placeholder="Select Month"
-          options={months.map((month) => ({ label: month, value: month }))}
-          classes="basis-1/4"
-          onChange={(obj) => {
-            setSelectedMonth(obj.value);
-          }}
-          defaultValue={{ label: selectedMonth, value: selectedMonth }}
-        />
-      </div>
+      <SimpleSelect
+        placeholder="Select League Month"
+        options={months.map((month) => ({ label: month, value: month }))}
+        classes="w-1/2 mb-4"
+        onChange={(obj) => {
+          setSelectedMonth(obj.value);
+        }}
+        defaultValue={{ label: selectedMonth, value: selectedMonth }}
+      />
       <div className="grid grid-cols-5 border-0 border-b-2 text-center">
         <div className="col-span-1">Places</div>
         <div className="col-span-2">Name</div>

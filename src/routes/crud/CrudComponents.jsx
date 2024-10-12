@@ -53,7 +53,7 @@ export function SimpleSelect({
     <Select
       options={options}
       placeholder={placeholder}
-      defaultValue={defaultValue}
+      defaultValue={defaultValue?.value}
       className={`${classes}`}
       onChange={onChange}
     />
