@@ -20,13 +20,13 @@ const Achievement = ({ name, children, restrictions }) => {
         )}
       </div>
       {toggle &&
-        restrictions.map(({ id, name }) => (
+        restrictions?.map(({ id, name }) => (
           <div key={id} className="ml-3 text-md">
             <i className="fa-solid fa-minus mr-2" /> {name}
           </div>
         ))}
-      {children.length > 0 &&
-        children.map(({ id, name }) => (
+      {children?.length > 0 &&
+        children?.map(({ id, name }) => (
           <div key={id} className="ml-3 italic">
             {name}
           </div>
@@ -42,13 +42,15 @@ export default function AchievementsPage() {
     return <LoadingSpinner />;
   }
 
+  const achievementKeys = Object.keys[data?.map] || [];
+
   return (
     <div className="p-4">
       <PageTitle title="Achievements" />
-      {Object.keys(data.map).map((x) => (
+      {achievementKeys.map((x) => (
         <div key={x} className="p-2">
           <div className="font-bold text-2xl">{x} Points</div>
-          {data.map[x].map(({ id, name, children, restrictions }) => (
+          {data.map[x]?.map(({ id, name, children, restrictions }) => (
             <Achievement
               key={id}
               name={name}

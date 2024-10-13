@@ -31,7 +31,7 @@ export default function Leaderboard() {
       <PageTitle title="Current Month Leaderboard" />
       <SimpleSelect
         placeholder="Select League Month"
-        options={months.map((month) => ({ label: month, value: month }))}
+        options={months?.map((month) => ({ label: month, value: month }))}
         classes="w-1/2 mb-4"
         onChange={(obj) => {
           setSelectedMonth(obj.value);

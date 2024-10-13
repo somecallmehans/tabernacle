@@ -10,6 +10,8 @@ import LeaderBoard from "./routes/leaderboard/Leaderboard";
 import AchievementsPage from "./routes/achievements/Achievements";
 import LeagueRouter from "./routes/leagueSession/LeagueSession";
 import ManagementContainer from "./routes/crud/ManagementContainer";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(!!auth.getToken());
@@ -17,6 +19,7 @@ function App() {
   return (
     <>
       <Navbar loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
+      <ToastContainer />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/faq" element={<FAQ />} />

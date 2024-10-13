@@ -1,4 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { toast } from "react-toastify";
+
 import auth, { getTokenRaw } from "../helpers/authHelpers";
 import getRoutes from "./getRoutes";
 import postRoutes from "./postRoutes";
@@ -36,6 +38,10 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
       auth.removeToken();
       api.dispatch({ type: "auth/logout" });
     }
+  }
+
+  if (result.error) {
+    toast.error(`Error while performing request: ${result?.error?.error}`);
   }
 
   return result;
