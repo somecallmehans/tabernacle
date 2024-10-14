@@ -42,7 +42,7 @@ export default function AchievementsPage() {
     return <LoadingSpinner />;
   }
 
-  const achievementKeys = Object.keys[data?.map] || [];
+  const achievementKeys = Object.keys(data?.map) || [];
 
   return (
     <div className="p-4">

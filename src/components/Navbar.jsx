@@ -8,10 +8,10 @@ const navLinks = [
   { id: 2, name: "FAQ", to: "/faq", admin: false },
   { id: 3, name: "Leaderboard", to: "/leaderboard", admin: false },
   { id: 4, name: "Achievements", to: "/achievements", admin: false },
-  { id: 5, name: "League Management", to: "/management", admin: true },
+  { id: 5, name: "League", to: "/management", admin: true },
   {
     id: 6,
-    name: "Season Management",
+    name: "Season",
     to: "/league-session",
     admin: true,
   },
@@ -24,7 +24,7 @@ export default function Navbar({ loggedIn, setLoggedIn }) {
         {navLinks
           .filter((link) => !link.admin || (link.admin && loggedIn))
           .map(({ id, name, to }) => (
-            <NavLink key={id} className="mr-5" to={to}>
+            <NavLink key={id} className="mr-5 text-2xl" to={to}>
               {name}
             </NavLink>
           ))}
